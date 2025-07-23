@@ -241,10 +241,17 @@
     
     <script>
         // --- 데이터 관리 ---
-        const menuData = [
-            { id: 1, name: "스파게티", price: 15000, quantity: 0 },
-            { id: 2, name: "피자", price: 13000, quantity: 0 }
-        ];
+        // localStorage에서 메뉴 데이터 불러오기, 없으면 빈 배열로 시작
+        const serverMenu = JSON.parse(localStorage.getItem('foodMenuData')) || [];
+
+        // 서버 데이터를 프론트엔드에서 사용할 형식으로 변환
+        const menuData = serverMenu.map((item, index) => ({
+            id: index + 1, // id를 동적으로 부여
+            name: item.food_name,
+            price: item.price,
+            quantity: 0
+        }));
+
         let cartItems = [];
 
         // --- DOM 요소 참조 ---

@@ -126,6 +126,7 @@
         <button class="grid-button" id="button_order_supply">비품주문</button>
     </div>
     <script src="config.js"></script>
+    <script src="common.js"></script>
     <script>
         // --- 버튼 클릭 이벤트 리스너 설정 ---
 
@@ -166,6 +167,8 @@
                 }
 
                 const data = await response.json();
+                // 서버에서 받은 메뉴 데이터를 localStorage에 저장
+                localStorage.setItem('foodMenuData', JSON.stringify(data.payload.food_items));
                 console.log('서버 응답:', data);
 
                 // 응답이 오면 'page_callfood_1.html' 페이지로 이동
