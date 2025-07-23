@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css?family=Noto+Sans+KR:400,700&display=swap" rel="stylesheet" />
+    <title>ROOMIE</title>
+    <style>
+        /* --- 기본 스타일 초기화 --- */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* --- 전체 페이지 레이아웃 --- */
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            color: white;
+            
+            /* 배경 이미지와 어두운 오버레이 처리 */
+            background-image: linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.45)), url('asset/background_1.png');
+            background-size: cover;
+            background-position: center;
+            height: 100vh;
+
+            /* Flexbox를 사용해 내용물을 세로로 정렬 */
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between; /* 상단, 중앙, 하단으로 공간 배분 */
+            align-items: center;
+            text-align: center;
+            padding: 30px;
+        }
+
+        /* --- 상단 '201호' 텍스트 --- */
+        .header {
+            width: 100%;
+            text-align: right;
+            font-size: 28px;
+            font-weight: 700;
+        }
+
+        /* --- 중앙 콘텐츠 영역 --- */
+        .main-content {
+            /* Flexbox 자식 요소가 남는 공간을 차지하지 않도록 설정 */
+            flex-grow: 0; 
+        }
+        
+        .main-content h1 {
+            font-size: 75px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .main-content .subtitle {
+            font-size: 18px;
+            margin-bottom: 25px;
+        }
+
+        .main-content .welcome {
+            font-size: 20px;
+            font-weight: 700;
+        }
+        
+        /* --- 하단 버튼 그리드 영역 --- */
+        .button-grid {
+            width: 100%;
+            max-width: 420px; /* 버튼 영역의 최대 너비 제한 */
+            
+            /* CSS Grid를 사용해 2x2 격자 레이아웃 생성 */
+            display: grid;
+            grid-template-columns: 1fr 1fr; /* 2개의 동일한 너비의 열 */
+            gap: 15px; /* 버튼 사이의 간격 */
+            margin-top: 40px;
+        }
+        
+        /* --- 버튼 공통 스타일 --- */
+        .grid-button {
+            background-color: #3B5E72;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 25px 10px; /* 위아래 패딩을 늘려 높이 확보 */
+            font-family: 'Noto Sans KR', sans-serif;
+            font-size: 24px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .grid-button:hover {
+            background-color: #4a758f;
+        }
+
+        /* --- 반응형 처리: 화면 너비가 600px 이하일 때 --- */
+        @media (max-width: 600px) {
+            .main-content h1 {
+                font-size: 60px;
+            }
+            .main-content .subtitle, .main-content .welcome {
+                font-size: 16px;
+            }
+            .grid-button {
+                font-size: 20px;
+                padding: 20px 10px;
+            }
+        }
+
+    </style>
+</head>
+<body>
+
+    <header class="header">201호</header>
+
+    <main class="main-content">
+        <h1>ROOMIE</h1>
+        <p class="subtitle">호텔 안내 & 주문 배송 서비스</p>
+        <p class="welcome">ROOMIE에 오신 걸 환영합니다.</p>
+    </main>
+
+    <div class="button-grid">
+        <button class="grid-button" id="button_call_robot">로봇호출</button>
+        <button class="grid-button" id="button_order_history">요청조회</button>
+        <button class="grid-button" id="button_order_food">음식주문</button>
+        <button class="grid-button" id="button_order_supply">비품주문</button>
+    </div>
+    <script src="config.js"></script>
+    <script>
+        // --- 버튼 클릭 이벤트 리스너 설정 ---
+
+        // '로봇호출' 버튼
+        document.getElementById('button_call_robot').addEventListener('click', () => {
+            // 요구사항의 'image_food'는 문맥상 오류로 판단되어, 버튼에 맞는 알림으로 수정했습니다.
+            alert('로봇을 호출합니다.');
+        });
+
+        // '요청조회' 버튼
+        document.getElementById('button_order_history').addEventListener('click', () => {
+             // 요구사항의 'image_food'는 문맥상 오류로 판단되어, 버튼에 맞는 알림으로 수정했습니다.
+            alert('요청 내역을 조회합니다.');
+        });
+        
+        // '음식주문' 버튼
+        document.getElementById('button_order_food').addEventListener('click', async () => {
+            const requestData = {
+                type: "request",
+                action: "get_food_menu",
+                payload: {
+                    location_name: "ROOM_201"
+                }
+            };
+            
+            // !주의: 'YOUR_TEST_SERVER_URL' 부분에 실제 테스트 서버 주소를 입력해야 합니다.
+            const serverUrl = CONFIG.API_BASE_URL;
+            
+            try {
+                const response = await fetch(serverUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(requestData)
+                });
+
+                if (!response.ok) {
+                    throw new Error('서버 응답에 문제가 있습니다.');
+                }
+
+                const data = await response.json();
+                console.log('서버 응답:', data);
+
+                // 응답이 오면 'page_callfood_1.html' 페이지로 이동
+                // 실제 페이지 파일이 있어야 이동이 가능합니다.
+                window.location.href = 'page_callfood_1.html';
+
+            } catch (error) {
+                console.error('오류 발생:', error);
+                alert('음식 주문 메뉴를 불러오는 데 실패했습니다. 서버 상태를 확인해주세요.');
+            }
+        });
+
+        // '비품주문' 버튼
+        document.getElementById('button_order_supply').addEventListener('click', async () => {
+            const requestData = {
+                type: "request",
+                action: "get_supply_menu",
+                payload: {
+                    location_name: "ROOM_201"
+                }
+            };
+            
+            // !주의: 'YOUR_TEST_SERVER_URL' 부분에 실제 테스트 서버 주소를 입력해야 합니다.
+            const serverUrl =  CONFIG.API_BASE_URL;
+
+            try {
+                const response = await fetch(serverUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(requestData)
+                });
+
+                if (!response.ok) {
+                    throw new Error('서버 응답에 문제가 있습니다.');
+                }
+
+                const data = await response.json();
+                console.log('서버 응답:', data);
+
+                // 응답이 오면 'page_callsupply_1.html' 페이지로 이동
+                // 실제 페이지 파일이 있어야 이동이 가능합니다.
+                window.location.href = 'page_callsupply_1.html';
+
+            } catch (error) {
+                console.error('오류 발생:', error);
+                alert('비품 주문 메뉴를 불러오는 데 실패했습니다. 서버 상태를 확인해주세요.');
+            }
+        });
+
+    </script>
+</body>
+</html>

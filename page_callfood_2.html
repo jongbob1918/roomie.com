@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>주문 상품</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap');
+
+        :root {
+            --main-bg-color: #ffffff;
+            --primary-text-color: #2F2F2F;
+            --secondary-text-color: #5B5B5B;
+            --accent-color: #3B5E72;
+            --container-bg-color: #F5F5F5;
+            --border-radius: 10px;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Noto Sans KR', sans-serif;
+            background-image: url('asset/v14_853.png');
+            background-size: cover;
+            background-position: center;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-end; /* 컨테이너를 하단에 정렬 */
+        }
+
+        .container {
+            width: 100%;
+            max-width: 480px;
+            height: 90%;
+            background-color: var(--main-bg-color);
+            border-radius: 20px 20px 0 0;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 -5px 15px rgba(0,0,0,0.1);
+            position: relative; /* 헤더의 absolute 포지셔닝 기준 */
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            color: white;
+            position: absolute;
+            top: -70px; /* 컨테이너 상단 위로 배치 */
+            left: 0;
+            right: 0;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            font-weight: 300;
+            margin: 0;
+        }
+
+        .header .room-number {
+            font-size: 28px;
+            font-weight: 500;
+        }
+
+        .cart-header {
+            display: flex;
+            align-items: center;
+            padding: 20px;
+            padding-top: 30px;
+        }
+        
+        #back_button_1 {
+            cursor: pointer;
+            width: 24px;
+            height: 24px;
+        }
+
+        .cart-title {
+            font-size: 24px;
+            font-weight: 500;
+            color: var(--primary-text-color);
+            margin-left: 15px;
+        }
+
+        .cart-items {
+            flex-grow: 1;
+            padding: 0 20px;
+            overflow-y: auto; /* 항목이 많아지면 스크롤 */
+        }
+        
+        .item {
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid #eee;
+            padding: 20px 0;
+        }
+        
+        .item:last-child {
+            border-bottom: none;
+        }
+
+        .item-image {
+            width: 90px;
+            height: 90px;
+            background-color: var(--container-bg-color);
+            border-radius: var(--border-radius);
+            margin-right: 15px;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .item-details {
+            flex-grow: 1;
+            display: flex;
+            align-items: center; /* 내부 요소들을 중앙 정렬 */
+            gap: 15px; /* 요소들 사이의 간격 */
+        }
+        
+        .item-name {
+            font-size: 18px;
+            font-weight: 500;
+            color: var(--primary-text-color);
+            flex-basis: 80px; /* 이름 영역 너비 고정 */
+        }
+
+        .quantity-control {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .quantity-btn {
+            width: 28px;
+            height: 28px;
+            cursor: pointer;
+        }
+
+        .quantity {
+            font-size: 18px;
+            font-weight: 500;
+            min-width: 20px;
+            text-align: center;
+        }
+
+        .item-price {
+            font-size: 16px;
+            font-weight: 500;
+            color: var(--primary-text-color);
+            margin-left: auto; /* 가격을 오른쪽으로 밀어냄 */
+            min-width: 70px;
+            text-align: right;
+        }
+
+        .delete-btn {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .footer {
+            padding: 20px;
+            background-color: white;
+        }
+
+        .notice {
+            background-color: var(--container-bg-color);
+            text-align: center;
+            padding: 15px;
+            font-size: 14px;
+            color: var(--secondary-text-color);
+            border-radius: var(--border-radius);
+            margin-bottom: 15px;
+        }
+
+        .order-button {
+            width: 100%;
+            padding: 18px;
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            font-size: 18px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s, opacity 0.2s;
+        }
+        
+        .order-button:disabled {
+            background-color: #999;
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header class="header">
+            <h1>ROOMIE</h1>
+            <div class="room-number">202호</div>
+        </header>
+
+        <div class="cart-header">
+            <img id="back_button_1" src="asset/v14_863.png" alt="뒤로가기">
+            <h2 class="cart-title">주문상품</h2>
+        </div>
+
+        <div id="cart-items-container" class="cart-items">
+            </div>
+
+        <div class="footer">
+            <div class="notice">
+                장바구니에 담긴 상품은 최대 10분 보관됩니다.
+            </div>
+            <button id="order_food_button" class="order-button">주문하기</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const cartItemsContainer = document.getElementById('cart-items-container');
+            const orderButton = document.getElementById('order_food_button');
+            const backButton = document.getElementById('back_button_1');
+            
+            // localStorage에서 장바구니 데이터 불러오기
+            let cartItems = JSON.parse(localStorage.getItem('cartData')) || [];
+            
+            /**
+             * 장바구니 아이템을 화면에 다시 그리는 함수
+             */
+            function renderCartItems() {
+                cartItemsContainer.innerHTML = ''; // 기존 목록 초기화
+                
+                if (cartItems.length === 0) {
+                    cartItemsContainer.innerHTML = '<p style="text-align:center; color:#888; margin-top:50px;">장바구니가 비어있습니다.</p>';
+                } else {
+                    cartItems.forEach((item, index) => {
+                        const itemElement = document.createElement('div');
+                        itemElement.classList.add('item');
+                        itemElement.dataset.itemIndex = index; // 인덱스를 사용해 아이템 식별
+
+                        // 가상 이미지 경로 (실제 이미지 경로로 대체 필요)
+                        const imageUrl = `asset/${item.name === '스파게티' ? 'v14_857.png' : 'v14_875.png'}`;
+
+                        itemElement.innerHTML = `
+                            <div class="item-image" style="background-image: url('${imageUrl}')"></div>
+                            <div class="item-details">
+                                <span class="item-name">${item.name}</span>
+                                <div class="quantity-control">
+                                    <img src="asset/v14_864.png" alt="감소" class="quantity-btn minus-btn">
+                                    <span class="quantity">${item.quantity}</span>
+                                    <img src="asset/v14_865.png" alt="증가" class="quantity-btn plus-btn">
+                                </div>
+                                <span class="item-price">${(item.price * item.quantity).toLocaleString()}원</span>
+                            </div>
+                            <img src="asset/v14_861.png" alt="삭제" class="delete-btn">
+                        `;
+                        cartItemsContainer.appendChild(itemElement);
+                    });
+                }
+                
+                addEventListenersToItems();
+                updateLocalStorage();
+            }
+
+            /**
+             * 각 아이템의 버튼에 이벤트 리스너를 추가하는 함수
+             */
+            function addEventListenersToItems() {
+                document.querySelectorAll('.item').forEach(itemElement => {
+                    const itemIndex = parseInt(itemElement.dataset.itemIndex);
+
+                    itemElement.querySelector('.plus-btn').addEventListener('click', () => updateQuantity(itemIndex, 1));
+                    itemElement.querySelector('.minus-btn').addEventListener('click', () => updateQuantity(itemIndex, -1));
+                    itemElement.querySelector('.delete-btn').addEventListener('click', () => deleteItem(itemIndex));
+                });
+            }
+
+            /**
+             * 수량을 업데이트하는 함수
+             */
+            function updateQuantity(index, change) {
+                const item = cartItems[index];
+                if (item) {
+                    const newQuantity = item.quantity + change;
+                    if (newQuantity >= 0 && newQuantity <= 10) {
+                        item.quantity = newQuantity;
+                        renderCartItems(); // 화면 다시 그리기
+                    }
+                }
+            }
+            
+            /**
+             * 아이템을 삭제하는 함수
+             */
+            function deleteItem(index) {
+                cartItems.splice(index, 1); // 배열에서 아이템 제거
+                renderCartItems(); // 화면 다시 그리기
+            }
+            
+            /**
+             * 변경된 장바구니 정보를 localStorage에 저장하는 함수
+             */
+            function updateLocalStorage() {
+                localStorage.setItem('cartData', JSON.stringify(cartItems));
+            }
+
+            /**
+             * 주문 데이터를 서버로 전송하는 함수
+             */
+            async function postOrder() {
+                // 수량이 0보다 큰 상품만 필터링
+                const itemsToOrder = cartItems.filter(item => item.quantity > 0);
+
+                if (itemsToOrder.length === 0) {
+                    alert('주문할 상품이 없습니다. 수량을 확인해주세요.');
+                    return;
+                }
+
+                orderButton.disabled = true;
+                orderButton.textContent = '주문 처리 중...';
+
+                const requestBody = {
+                    type: "request",
+                    action: "create_delivery_task",
+                    payload: {
+                        location_name: "ROOM_201",
+                        task_type_name: "음식배달",
+                        order_details: {
+                            items: itemsToOrder.map(item => ({
+                                name: item.name,
+                                quantity: item.quantity,
+                                price: item.price
+                            }))
+                        }
+                    }
+                };
+
+                const serverUrl =  CONFIG.API_BASE_URL; // 로컬 테스트 서버 주소
+
+                try {
+                    const response = await fetch(serverUrl, {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify(requestBody),
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    
+                    const responseData = await response.json();
+                    console.log('서버 응답:', responseData);
+
+                    if (responseData.type === "response" && responseData.payload.success) {
+                        alert('주문이 성공적으로 접수되었습니다!');
+                        localStorage.removeItem('cartData'); // 주문 완료 후 장바구니 비우기
+                        window.location.href = 'page_callfood_3.html'; // 성공 페이지로 이동
+                    } else {
+                        throw new Error(responseData.payload.error_message || '알 수 없는 오류');
+                    }
+
+                } catch (error) {
+                    console.error('주문 요청 실패:', error);
+                    alert(`주문 처리 중 오류가 발생했습니다: ${error.message}`);
+                    orderButton.disabled = false;
+                    orderButton.textContent = '주문하기';
+                }
+            }
+            
+            // --- 이벤트 리스너 연결 ---
+            backButton.addEventListener('click', () => {
+                window.location.href = 'page_callfood_1.html';
+            });
+            
+            orderButton.addEventListener('click', postOrder);
+
+            // --- 초기 실행 ---
+            renderCartItems();
+        });
+    </script>
+</body>
+</html>

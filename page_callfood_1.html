@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>음식 주문</title>
+    <style>
+        /* Google Fonts Noto Sans KR 불러오기 */
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap');
+
+        /* --- 기본 스타일 리셋 --- */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* --- 전체 페이지 레이아웃 --- */
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            /* 배경 이미지를 상대 경로로 수정 */
+            background-image: url('asset/v13_116.png');
+            background-size: cover;
+            background-position: center;
+        }
+
+        /* --- 컨테이너 (스마트폰 화면) --- */
+        .container {
+            width: 100%;
+            max-width: 486px; /* 이미지 기준 너비 */
+            height: 801px; /* 이미지 기준 높이 */
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* --- 상단 헤더 (룸 번호) --- */
+        .header {
+            padding: 70px 30px 0;
+            color: white;
+            font-size: 36px;
+            text-align: right;
+            font-weight: 500;
+        }
+
+        /* --- 메인 컨텐츠 영역 --- */
+        .main-content {
+            flex-grow: 1; /* 남은 공간을 모두 차지 */
+            background-color: white;
+            margin: 20px 11px 0;
+            border-radius: 19px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        /* 뒤로가기 버튼 */
+        .back-button {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            width: 39px;
+            height: 39px;
+            /* 뒤로가기 버튼 아이콘 경로 수정 */
+            background-image: url('asset/v13_163.png');
+            background-size: contain;
+            background-repeat: no-repeat;
+            cursor: pointer;
+        }
+
+        /* 메뉴 아이템 목록 */
+        .menu-list {
+            margin-top: 50px; /* 뒤로가기 버튼과의 간격 */
+            flex-grow: 1;
+        }
+
+        /* 개별 메뉴 아이템 */
+        .menu-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .menu-image {
+            width: 170px;
+            height: 170px;
+            background-color: #f5f5f5;
+            border-radius: 10px;
+            margin-right: 20px;
+        }
+
+        .menu-details {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 25px; /* 내부 요소 간격 */
+        }
+
+        .menu-name {
+            font-size: 24px;
+            font-weight: 500;
+            color: #5b5b5b;
+        }
+        
+        /* 수량 조절 영역 */
+        .quantity-control {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .quantity-btn {
+            width: 36px;
+            height: 36px;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            cursor: pointer;
+            border: none;
+            background-color: transparent;
+        }
+
+        .minus-btn {
+            /* 마이너스 아이콘 경로 수정 */
+            background-image: url('asset/v13_187.png');
+        }
+
+        .plus-btn {
+            /* 플러스 아이콘 경로 수정 */
+            background-image: url('asset/v13_188.png');
+        }
+
+        .quantity {
+            font-size: 20px;
+            font-weight: 500;
+            color: #5b5b5b;
+            min-width: 25px;
+            text-align: center;
+        }
+
+        .select-button {
+            background-color: #3b5e72;
+            color: white;
+            border: none;
+            padding: 8px 24px;
+            border-radius: 5px;
+            font-size: 20px;
+            font-weight: 300;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .select-button:hover {
+            background-color: #2a4350;
+        }
+        .select-button.added {
+            background-color: #6c757d;
+            cursor: not-allowed;
+        }
+
+
+        /* --- 하단 푸터 (총액, 장바구니) --- */
+        .footer {
+            width: 464px;
+            height: 69px;
+            background-color: #3b5e72;
+            position: absolute;
+            bottom: 0;
+            left: 11px;
+            right: 11px;
+            display: flex;
+            align-items: center;
+            justify-content: space-evenly;
+            color: white;
+            font-size: 24px;
+        }
+
+        .total-price {
+            font-weight: 500;
+        }
+
+        .divider {
+            width: 1px;
+            height: 40px;
+            background-color: white;
+            opacity: 0.7;
+        }
+
+        .cart-button {
+            font-weight: 400;
+            cursor: pointer;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            font-family: 'Noto Sans KR', sans-serif;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header class="header">202호</header>
+
+        <main class="main-content">
+            <div id="back_button_1" class="back-button"></div>
+
+            <div class="menu-list">
+                <div class="menu-item" data-id="1" data-name="스파게티" data-price="15000">
+                    <div id="spaghetti-image" class="menu-image"></div>
+                    <div class="menu-details">
+                        <span class="menu-name">스파게티</span>
+                        <div class="quantity-control">
+                            <button id="minus_1" class="quantity-btn minus-btn"></button>
+                            <span id="quantity_1" class="quantity">0</span>
+                            <button id="plus_1" class="quantity-btn plus-btn"></button>
+                        </div>
+                        <button id="select_button_1" class="select-button">선택</button>
+                    </div>
+                </div>
+
+                <div class="menu-item" data-id="2" data-name="피자" data-price="13000">
+                     <div id="pizza-image" class="menu-image"></div>
+                    <div class="menu-details">
+                        <span class="menu-name">피자</span>
+                        <div class="quantity-control">
+                            <button id="minus_2" class="quantity-btn minus-btn"></button>
+                            <span id="quantity_2" class="quantity">0</span>
+                            <button id="plus_2" class="quantity-btn plus-btn"></button>
+                        </div>
+                        <button id="select_button_2" class="select-button">선택</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <span class="total-price" id="total_price">총 0원</span>
+            <div class="divider"></div>
+            <button id="button_cart" class="cart-button">장바구니 보기</button>
+        </footer>
+    </div>
+    <script src="config.js"></script>
+    <script>
+        // --- 데이터 관리 ---
+        const menuData = [
+            { id: 1, name: "스파게티", price: 15000, quantity: 0 },
+            { id: 2, name: "피자", price: 13000, quantity: 0 }
+        ];
+
+        let cartItems = [];
+
+        // --- DOM 요소 참조 ---
+        const backButton = document.getElementById('back_button_1');
+        const cartButton = document.getElementById('button_cart');
+        const totalPriceElement = document.getElementById('total_price');
+
+        // --- 함수 정의 ---
+
+        /** 총액을 계산하고 화면에 업데이트하는 함수 */
+        function updateTotalPrice() {
+            const total = menuData.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            totalPriceElement.textContent = `총 ${total.toLocaleString()}원`;
+        }
+        
+        /** 수량 변경 처리 함수 */
+        function handleQuantityChange(id, change) {
+            const item = menuData.find(menu => menu.id === id);
+            if (!item) return;
+
+            const newQuantity = item.quantity + change;
+            
+            if (newQuantity >= 0 && newQuantity <= 10) {
+                item.quantity = newQuantity;
+                document.getElementById(`quantity_${id}`).textContent = item.quantity;
+                updateTotalPrice();
+            }
+        }
+        
+        /** '선택' 버튼 처리 함수 */
+        function handleSelect(id) {
+            const item = menuData.find(menu => menu.id === id);
+            const selectButton = document.getElementById(`select_button_${id}`);
+            
+            if (!item || item.quantity === 0) {
+                alert('수량을 1개 이상 선택해주세요.');
+                return;
+            }
+
+            const existingCartItemIndex = cartItems.findIndex(cartItem => cartItem.name === item.name);
+
+            if (existingCartItemIndex > -1) {
+                cartItems[existingCartItemIndex].quantity = item.quantity;
+            } else {
+                cartItems.push({
+                    name: item.name,
+                    quantity: item.quantity,
+                    price: item.price
+                });
+            }
+            
+            selectButton.textContent = '추가됨';
+            selectButton.classList.add('added');
+            
+            console.log('장바구니 현황:', cartItems);
+        }
+
+
+        // --- 이벤트 리스너 설정 ---
+
+        backButton.addEventListener('click', () => {
+            window.location.href = 'init_room_201.html';
+        });
+
+        document.querySelectorAll('.menu-item').forEach(menuElement => {
+            const id = parseInt(menuElement.dataset.id);
+            
+            menuElement.querySelector('.minus-btn').addEventListener('click', () => handleQuantityChange(id, -1));
+            menuElement.querySelector('.plus-btn').addEventListener('click', () => handleQuantityChange(id, 1));
+            menuElement.querySelector('.select-button').addEventListener('click', () => handleSelect(id));
+        });
+
+        cartButton.addEventListener('click', () => {
+            if (cartItems.length === 0) {
+                alert('장바구니에 담긴 상품이 없습니다.');
+                return;
+            }
+            localStorage.setItem('cartData', JSON.stringify(cartItems));
+            window.location.href = 'page_callfood_2.html';
+        });
+
+        // --- 초기화 ---
+        updateTotalPrice();
+
+    </script>
+</body>
+</html>
