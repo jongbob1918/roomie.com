@@ -22,7 +22,6 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
-            /* 배경 이미지를 상대 경로로 수정 */
             background-image: url('asset/v13_116.png');
             background-size: cover;
             background-position: center;
@@ -31,8 +30,8 @@
         /* --- 컨테이너 (스마트폰 화면) --- */
         .container {
             width: 100%;
-            max-width: 486px; /* 이미지 기준 너비 */
-            height: 801px; /* 이미지 기준 높이 */
+            max-width: 486px;
+            height: 801px;
             position: relative;
             overflow: hidden;
             display: flex;
@@ -50,7 +49,7 @@
 
         /* --- 메인 컨텐츠 영역 --- */
         .main-content {
-            flex-grow: 1; /* 남은 공간을 모두 차지 */
+            flex-grow: 1;
             background-color: white;
             margin: 20px 11px 0;
             border-radius: 19px;
@@ -67,7 +66,6 @@
             left: 15px;
             width: 39px;
             height: 39px;
-            /* 뒤로가기 버튼 아이콘 경로 수정 */
             background-image: url('asset/v13_163.png');
             background-size: contain;
             background-repeat: no-repeat;
@@ -76,8 +74,9 @@
 
         /* 메뉴 아이템 목록 */
         .menu-list {
-            margin-top: 50px; /* 뒤로가기 버튼과의 간격 */
+            margin-top: 50px;
             flex-grow: 1;
+            overflow-y: auto; /* 내용이 많아지면 스크롤 */
         }
 
         /* 개별 메뉴 아이템 */
@@ -93,6 +92,7 @@
             background-color: #f5f5f5;
             border-radius: 10px;
             margin-right: 20px;
+            flex-shrink: 0; /* 이미지가 찌그러지지 않도록 설정 */
         }
 
         .menu-details {
@@ -100,16 +100,16 @@
             display: flex;
             flex-direction: column;
             align-items: flex-start;
-            gap: 25px; /* 내부 요소 간격 */
+            gap: 25px;
         }
 
         .menu-name {
-            font-size: 24px;
+            /* [수정] 반응형 폰트 적용 */
+            font-size: clamp(20px, 4.5vw, 24px);
             font-weight: 500;
             color: #5b5b5b;
         }
         
-        /* 수량 조절 영역 */
         .quantity-control {
             display: flex;
             align-items: center;
@@ -120,22 +120,13 @@
             width: 36px;
             height: 36px;
             background-size: contain;
-            background-repeat: no-repeat;
-            background-position: center;
             cursor: pointer;
             border: none;
             background-color: transparent;
         }
 
-        .minus-btn {
-            /* 마이너스 아이콘 경로 수정 */
-            background-image: url('asset/v13_187.png');
-        }
-
-        .plus-btn {
-            /* 플러스 아이콘 경로 수정 */
-            background-image: url('asset/v13_188.png');
-        }
+        .minus-btn { background-image: url('asset/v13_187.png'); }
+        .plus-btn { background-image: url('asset/v13_188.png'); }
 
         .quantity {
             font-size: 20px;
@@ -151,34 +142,33 @@
             border: none;
             padding: 8px 24px;
             border-radius: 5px;
-            font-size: 20px;
+            /* [수정] 반응형 폰트 적용 */
+            font-size: clamp(16px, 4vw, 20px);
             font-weight: 300;
             cursor: pointer;
             transition: background-color 0.2s;
         }
-        .select-button:hover {
-            background-color: #2a4350;
-        }
+        .select-button:hover { background-color: #2a4350; }
         .select-button.added {
             background-color: #6c757d;
             cursor: not-allowed;
         }
 
-
         /* --- 하단 푸터 (총액, 장바구니) --- */
         .footer {
-            width: 464px;
+            width: calc(100% - 22px); /* 컨테이너 좌우 마진만큼 빼기 */
             height: 69px;
             background-color: #3b5e72;
             position: absolute;
             bottom: 0;
             left: 11px;
-            right: 11px;
             display: flex;
             align-items: center;
-            justify-content: space-evenly;
+            justify-content: space-between; /* [수정] 양쪽 끝으로 정렬 */
             color: white;
-            font-size: 24px;
+            padding: 0 25px; /* [수정] 내부 좌우 여백 추가 */
+            /* [수정] 반응형 폰트 적용 */
+            font-size: clamp(20px, 4.5vw, 24px);
         }
 
         .total-price {
@@ -190,6 +180,7 @@
             height: 40px;
             background-color: white;
             opacity: 0.7;
+            margin: 0 15px; /* [수정] 좌우 마진 추가 */
         }
 
         .cart-button {
@@ -198,8 +189,9 @@
             background: none;
             border: none;
             color: white;
-            font-size: 24px;
             font-family: 'Noto Sans KR', sans-serif;
+            font-size: inherit; /* [수정] 부모(footer)의 폰트 크기 상속 */
+            white-space: nowrap; /* [추가] 텍스트가 길어져도 줄바꿈 방지 */
         }
     </style>
 </head>
@@ -212,7 +204,7 @@
             <div id="back_button_1" class="back-button"></div>
 
             <div class="menu-list">
-                <div class="menu-item" data-id="1" data-name="스파게티" data-price="15000">
+                <div class="menu-item" data-id="1">
                     <div id="spaghetti-image" class="menu-image"></div>
                     <div class="menu-details">
                         <span class="menu-name">스파게티</span>
@@ -225,7 +217,7 @@
                     </div>
                 </div>
 
-                <div class="menu-item" data-id="2" data-name="피자" data-price="13000">
+                <div class="menu-item" data-id="2">
                      <div id="pizza-image" class="menu-image"></div>
                     <div class="menu-details">
                         <span class="menu-name">피자</span>
@@ -246,14 +238,13 @@
             <button id="button_cart" class="cart-button">장바구니 보기</button>
         </footer>
     </div>
-    <script src="config.js"></script>
+    
     <script>
         // --- 데이터 관리 ---
         const menuData = [
             { id: 1, name: "스파게티", price: 15000, quantity: 0 },
             { id: 2, name: "피자", price: 13000, quantity: 0 }
         ];
-
         let cartItems = [];
 
         // --- DOM 요소 참조 ---
@@ -269,6 +260,12 @@
             totalPriceElement.textContent = `총 ${total.toLocaleString()}원`;
         }
         
+        /** [추가됨] 장바구니 버튼의 텍스트를 업데이트하는 함수 */
+        function updateCartButtonText() {
+            const itemCount = cartItems.length;
+            cartButton.textContent = itemCount > 0 ? `장바구니 보기 (${itemCount})` : '장바구니 보기';
+        }
+
         /** 수량 변경 처리 함수 */
         function handleQuantityChange(id, change) {
             const item = menuData.find(menu => menu.id === id);
@@ -308,9 +305,11 @@
             selectButton.textContent = '추가됨';
             selectButton.classList.add('added');
             
+            // [추가됨] 장바구니 버튼 텍스트 업데이트
+            updateCartButtonText();
+            
             console.log('장바구니 현황:', cartItems);
         }
-
 
         // --- 이벤트 리스너 설정 ---
 
@@ -337,6 +336,7 @@
 
         // --- 초기화 ---
         updateTotalPrice();
+        updateCartButtonText(); // [추가됨] 페이지 로드 시에도 실행
 
     </script>
 </body>
