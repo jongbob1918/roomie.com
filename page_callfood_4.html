@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Roomie - 음식 배달 현황</title>
+    <style>
+        /* Google Fonts Import */
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap');
+
+        /* CSS Reset & Basic Setup */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            font-family: 'Noto Sans KR', sans-serif;
+            font-size: 16px; /* 기준 폰트 크기 설정 */
+        }
+
+        /* Main Container */
+        .container {
+            width: 100%;
+            max-width: 486px; /* 최대 너비 제한 */
+            height: 100vh;
+            max-height: 801px; /* 최대 높이 제한 */
+            margin: 0 auto; /* 중앙 정렬 */
+            position: relative;
+            background: url('data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAYABgAAD/2wBDAAIBAQIBAQICAgICAgICAwUDAwMDAwYEBAMFBwYHBwcGBwcICQsJCAgKCAcHCg0KCgsMDAwMBwkODw0MDgsMDAz/2wBDAQICAgMDAwYDAwYMCAcIDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAz/wAARCAMgAlgDASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1VXV1hZWmNkZWZnaGlqc3R1dnd4eXqCg4SFhoeIiYqSk5SVlpeYmZqio6Slpqeoqaqys7S1tre4ubrCw8TFxsfIycrS09TV1tfY2dri4+Tl5ufo6ery8/T19vf4+fr/2gAMAwEAAhEDEQA/AP38ooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigA" />') no-repeat center center;
+            background-size: cover;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            color: white;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 1.5rem;
+            flex-shrink: 0;
+            background: rgba(0, 0, 0, 0.1);
+        }
+
+        .header-title {
+            font-size: 2rem;
+            font-weight: 300;
+        }
+
+        .header-location {
+            font-size: 1.8rem;
+            font-weight: 500;
+        }
+
+        #button_cancel {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            width: 37px;
+            height: 37px;
+            background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACUAAAAlCAQAAADtHqC3AAAA1ElEQVRIx2P8//8/Awy/v59BPop/ggETwXDAA8Y/MIwD/P3/D8P/z/Cf4V8GBmYjecy/wcDIwMjAzMCK4QcDWIAJYjAwMDEgIuofGfgZGLiYGBgZWBgyMDIwMhAaYDL8Z2DkYmBgZgAzGbgYWDgYWfiZAUYRDH8ZGBgZmIYx/A/8//8/w39e/hUMDPx/Bl5G/n9G/r8G5kP8V4YNrGTEgM3Iy8DIwMgATYCK4T8DEwMDEyMDMwMTM4MLgJkAggEJAQDz2E53P/V1bAAAAABJRU5ErkJggg==') no-repeat center center;
+            background-size: contain;
+            border: none;
+            cursor: pointer;
+        }
+
+        /* Main Content Area */
+        .content {
+            flex-grow: 1;
+            display: flex;
+            align-items: flex-end; /* Aligns the card to the bottom */
+            padding: 1rem;
+        }
+
+        /* Delivery Status Card */
+        .status-card {
+            width: 100%;
+            background-color: white;
+            color: #474646;
+            border-radius: 19px;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem; /*
+  *This will be the main gap between sections inside the card.
+ */
+        }
+
+        .status-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap; /* Allows wrapping on smaller screens */
+            border-bottom: 1px solid #eee;
+            padding-bottom: 1rem;
+        }
+
+        #task_type_name {
+            font-size: 1.8rem;
+            font-weight: 500;
+        }
+        
+        .status-summary {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        #estimated_time {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        #request_location_name {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: rgba(37, 62, 109, 0.4);
+            text-align: right;
+        }
+
+        .status-timeline {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .timeline-item {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+        
+        .timeline-point {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .point {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background-color: #3B5E72; /* Active color */
+        }
+        
+        .line {
+            width: 4px;
+            height: 40px;
+            background-color: #3B5E72; /* Active color */
+        }
+        
+        .timeline-details {
+            flex-grow: 1;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .status-text {
+            font-size: 1.25rem;
+            font-weight: 400;
+        }
+
+        .status-time {
+            font-size: 1.25rem;
+            font-weight: 400;
+            color: #888;
+        }
+        
+        /* Inactive/Pending State */
+        .inactive .point,
+        .inactive .line {
+            background-color: #D9D9D9; /* Inactive color */
+        }
+        
+        .inactive .status-text,
+        .inactive .status-time {
+            color: #D9D9D9;
+        }
+        
+        .inactive .line {
+           background-color: transparent; /* Last item has no line */
+        }
+
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header class="header">
+            <button id="button_cancel" title="취소하고 돌아가기"></button>
+            <h1 class="header-title">ROOMIE</h1>
+            <div id="room_number" class="header-location"></div>
+        </header>
+
+        <main class="content">
+            <div class="status-card">
+                <div class="status-header">
+                    <h2 id="task_type_name"></h2>
+                    <div class="status-summary">
+                      <p id="estimated_time"></p>
+                      <p id="request_location_name"></p>
+                    </div>
+                </div>
+                
+                <div class="status-timeline">
+                    <div id="status_creation" class="timeline-item">
+                        <div class="timeline-point">
+                            <div class="point"></div>
+                            <div class="line"></div>
+                        </div>
+                        <div class="timeline-details">
+                            <span class="status-text">주문 접수됨</span>
+                            <span class="status-time"></span>
+                        </div>
+                    </div>
+                    <div id="status_assignment" class="timeline-item">
+                        <div class="timeline-point">
+                            <div class="point"></div>
+                            <div class="line"></div>
+                        </div>
+                        <div class="timeline-details">
+                            <span class="status-text">픽업중</span>
+                            <span class="status-time"></span>
+                        </div>
+                    </div>
+                    <div id="status_pickup" class="timeline-item">
+                        <div class="timeline-point">
+                            <div class="point"></div>
+                            <div class="line"></div>
+                        </div>
+                        <div class="timeline-details">
+                            <span class="status-text">배달중</span>
+                            <span class="status-time"></span>
+                        </div>
+                    </div>
+                    <div id="status_arrival" class="timeline-item">
+                        <div class="timeline-point">
+                            <div class="point"></div>
+                            <div class="line inactive"></div>
+                        </div>
+                        <div class="timeline-details">
+                            <span class="status-text">배달완료</span>
+                            <span class="status-time"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // --- Placeholder for config.js ---
+        const config = {
+            api: {
+                // In a real scenario, this would be a WebSocket or HTTP endpoint
+                serverUrl: 'ws://test-server.example.com' 
+            }
+        };
+
+        // --- Placeholder for common.js ---
+        const common = {
+            // As requested, location_name is referenced dynamically.
+            locations: {
+                "ROOM_201": "202호" 
+                // Add other locations as needed
+            },
+            getLocationName: function(locationId) {
+                return this.locations[locationId] || "알 수 없는 위치";
+            }
+        };
+
+
+        document.addEventListener('DOMContentLoaded', function() {
+            
+            let orderHistoryInterval;
+
+            // --- Mock Server Response ---
+            // This simulates the response from the server.
+            const mockResponse = {
+                "type": "response",
+                "action": "get_order_history",
+                "payload": {
+                    "request_location": "ROOM_201",
+                    "task_name": "TASK_001",
+                    "task_type_name": "음식배달",
+                    "estimated_time": 55, // in seconds
+                    "task_creation_time": "2025-07-22T19:23:16+09:00",
+                    "robot_assignment_time": "2025-07-22T19:40:00+09:00",
+                    "pickup_completion_time": null,
+                    "delivery_arrival_time": null,
+                }
+            };
+            
+            /**
+             * Formats an ISO 8601 date string into "오후 H:MM" format.
+             * @param {string | null} isoString - The date string to format.
+             * @returns {string} - The formatted time string or an empty string if input is null.
+             */
+            function formatTime(isoString) {
+                if (!isoString) return '';
+                const date = new Date(isoString);
+                let hours = date.getHours();
+                const minutes = date.getMinutes().toString().padStart(2, '0');
+                const ampm = hours >= 12 ? '오후' : '오전';
+                hours = hours % 12;
+                hours = hours ? hours : 12; // the hour '0' should be '12'
+                return `${ampm} ${hours}:${minutes}`;
+            }
+
+            /**
+             * Updates the UI based on the payload from the server.
+             * @param {object} payload - The payload object from the server response.
+             */
+            function updateStatus(payload) {
+                // Update header room number
+                document.getElementById('room_number').textContent = common.getLocationName(payload.request_location);
+                
+                // Update main card content
+                document.getElementById('task_type_name').textContent = payload.task_type_name;
+                document.getElementById('request_location_name').textContent = `목적지 ${common.getLocationName(payload.request_location)}`;
+
+                // Calculate and display estimated arrival time
+                const now = new Date();
+                const arrivalTime = new Date(now.getTime() + payload.estimated_time * 1000);
+                document.getElementById('estimated_time').textContent = `${formatTime(arrivalTime.toISOString())} 도착 예정`;
+                
+                // Update timeline statuses
+                const statuses = [
+                    { id: 'status_creation', time: payload.task_creation_time },
+                    { id: 'status_assignment', time: payload.robot_assignment_time },
+                    { id: 'status_pickup', time: payload.pickup_completion_time },
+                    { id: 'status_arrival', time: payload.delivery_arrival_time }
+                ];
+                
+                statuses.forEach(status => {
+                    const element = document.getElementById(status.id);
+                    const timeElement = element.querySelector('.status-time');
+                    if (status.time) {
+                        element.classList.remove('inactive');
+                        timeElement.textContent = formatTime(status.time);
+                    } else {
+                        element.classList.add('inactive');
+                        timeElement.textContent = '';
+                    }
+                });
+            }
+
+            /**
+             * Simulates a request to the server and gets a response.
+             */
+            function getOrderHistory() {
+                const request = {
+                    "type": "request",
+                    "action": "get_order_history",
+                    "payload": {
+                        "request_location": "ROOM_201",
+                        "task_name": "TASK_001",
+                        "task_type_name": "음식배달"
+                    }
+                };
+                
+                console.log('Requesting order history:', request);
+                
+                // In a real application, you would send this request over a WebSocket or HTTP.
+                // Here, we'll just use the mock response.
+                console.log('Received mock response:', mockResponse);
+                updateStatus(mockResponse.payload);
+            }
+
+            // --- Event Listeners and Initial Setup ---
+
+            // Cancel button functionality
+            const cancelButton = document.getElementById('button_cancel');
+            cancelButton.addEventListener('click', () => {
+                console.log('Cancel button clicked. Stopping updates and redirecting.');
+                clearInterval(orderHistoryInterval); // Stop periodic requests
+                window.location.href = 'init_room_201.html'; // Redirect
+            });
+
+            // Initial call to populate the page
+            getOrderHistory(); 
+            
+            // Set up periodic requests every 15 seconds
+            orderHistoryInterval = setInterval(getOrderHistory, 15000);
+        });
+    </script>
+
+</body>
+</html>

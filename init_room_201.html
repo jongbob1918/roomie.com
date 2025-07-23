@@ -132,14 +132,50 @@
 
         // '로봇호출' 버튼
         document.getElementById('button_call_robot').addEventListener('click', () => {
-            // 요구사항의 'image_food'는 문맥상 오류로 판단되어, 버튼에 맞는 알림으로 수정했습니다.
             alert('로봇을 호출합니다.');
         });
 
-        // '요청조회' 버튼
-        document.getElementById('button_order_history').addEventListener('click', () => {
-             // 요구사항의 'image_food'는 문맥상 오류로 판단되어, 버튼에 맞는 알림으로 수정했습니다.
-            alert('요청 내역을 조회합니다.');
+        // '요청조회' 버튼 (수정됨)
+        document.getElementById('button_order_history').addEventListener('click', async () => {
+            const requestData = {
+                type: "request",
+                action: "get_order_history",
+                payload: {
+                    request_location: "ROOM_201",
+                    // 어떤 주문인지 특정할 수 없으므로 대표값으로 전송
+                    task_name: "TASK_001", 
+                    task_type_name: "음식배달"
+                }
+            };
+            
+            const serverUrl = CONFIG.API_BASE_URL;
+
+            try {
+                const response = await fetch(serverUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(requestData)
+                });
+
+                if (!response.ok) {
+                    throw new Error('서버 응답에 문제가 있습니다.');
+                }
+
+                const data = await response.json();
+                console.log('서버 응답:', data);
+
+                if (data.type === 'response' && data.action === 'get_order_history') {
+                    // 성공 시, 응답 데이터를 localStorage에 저장
+                    localStorage.setItem('lastHistoryResponse', JSON.stringify(data));
+                    // 다음 페이지로 이동 (page_callfood_4.html 파일이 실제로 존재해야 합니다)
+                    window.location.href = 'page_callfood_4.html';
+                } else {
+                    throw new Error(data.message || '유효하지 않은 서버 응답');
+                }
+            } catch (error) {
+                console.error('요청 조회 실패:', error);
+                alert('요청 내역을 불러오는 데 실패했습니다. 서버 상태를 확인해주세요.');
+            }
         });
         
         // '음식주문' 버튼
@@ -152,7 +188,6 @@
                 }
             };
             
-            // !주의: 'YOUR_TEST_SERVER_URL' 부분에 실제 테스트 서버 주소를 입력해야 합니다.
             const serverUrl = CONFIG.API_BASE_URL;
             
             try {
@@ -167,12 +202,8 @@
                 }
 
                 const data = await response.json();
-                // 서버에서 받은 메뉴 데이터를 localStorage에 저장
                 localStorage.setItem('foodMenuData', JSON.stringify(data.payload.food_items));
                 console.log('서버 응답:', data);
-
-                // 응답이 오면 'page_callfood_1.html' 페이지로 이동
-                // 실제 페이지 파일이 있어야 이동이 가능합니다.
                 window.location.href = 'page_callfood_1.html';
 
             } catch (error) {
@@ -191,7 +222,6 @@
                 }
             };
             
-            // !주의: 'YOUR_TEST_SERVER_URL' 부분에 실제 테스트 서버 주소를 입력해야 합니다.
             const serverUrl =  CONFIG.API_BASE_URL;
 
             try {
@@ -207,9 +237,6 @@
 
                 const data = await response.json();
                 console.log('서버 응답:', data);
-
-                // 응답이 오면 'page_callsupply_1.html' 페이지로 이동
-                // 실제 페이지 파일이 있어야 이동이 가능합니다.
                 window.location.href = 'page_callsupply_1.html';
 
             } catch (error) {

@@ -172,6 +172,17 @@
             border-radius: var(--border-radius);
             margin-bottom: 15px;
         }
+        
+        /* CSS 추가 */
+        .total-price-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 5px;
+            font-size: 20px;
+            font-weight: 500;
+            color: var(--primary-text-color);
+        }
 
         .order-button {
             width: 100%;
@@ -214,34 +225,45 @@
             <div class="notice">
                 장바구니에 담긴 상품은 최대 10분 보관됩니다.
             </div>
+
+            <div class="total-price-container">
+                <span>상품금액</span>
+                <span id="total-price-display">0원</span>
+            </div>
+
             <button id="order_food_button" class="order-button">주문하기</button>
         </div>
     </div>
-
+    <script src="config.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const cartItemsContainer = document.getElementById('cart-items-container');
             const orderButton = document.getElementById('order_food_button');
             const backButton = document.getElementById('back_button_1');
+            const totalPriceDisplay = document.getElementById('total-price-display'); // 총금액 표시 요소 참조
             
-            // localStorage에서 장바구니 데이터 불러오기
             let cartItems = JSON.parse(localStorage.getItem('cartData')) || [];
             
             /**
              * 장바구니 아이템을 화면에 다시 그리는 함수
              */
             function renderCartItems() {
-                cartItemsContainer.innerHTML = ''; // 기존 목록 초기화
+                cartItemsContainer.innerHTML = ''; 
                 
+                // JavaScript 수정: 총금액 계산 로직 추가
+                let totalPrice = 0;
+
                 if (cartItems.length === 0) {
                     cartItemsContainer.innerHTML = '<p style="text-align:center; color:#888; margin-top:50px;">장바구니가 비어있습니다.</p>';
                 } else {
                     cartItems.forEach((item, index) => {
+                        const itemSubtotal = item.price * item.quantity;
+                        totalPrice += itemSubtotal; // 각 상품의 소계를 총액에 더함
+
                         const itemElement = document.createElement('div');
                         itemElement.classList.add('item');
-                        itemElement.dataset.itemIndex = index; // 인덱스를 사용해 아이템 식별
+                        itemElement.dataset.itemIndex = index;
 
-                        // 가상 이미지 경로 (실제 이미지 경로로 대체 필요)
                         const imageUrl = `asset/${item.name === '스파게티' ? 'v14_857.png' : 'v14_875.png'}`;
 
                         itemElement.innerHTML = `
@@ -253,7 +275,7 @@
                                     <span class="quantity">${item.quantity}</span>
                                     <img src="asset/v14_865.png" alt="증가" class="quantity-btn plus-btn">
                                 </div>
-                                <span class="item-price">${(item.price * item.quantity).toLocaleString()}원</span>
+                                <span class="item-price">${itemSubtotal.toLocaleString()}원</span>
                             </div>
                             <img src="asset/v14_861.png" alt="삭제" class="delete-btn">
                         `;
@@ -261,6 +283,9 @@
                     });
                 }
                 
+                // JavaScript 수정: 계산된 총액을 화면에 표시
+                totalPriceDisplay.textContent = `${totalPrice.toLocaleString()}원`;
+
                 addEventListenersToItems();
                 updateLocalStorage();
             }
@@ -285,10 +310,11 @@
                 const item = cartItems[index];
                 if (item) {
                     const newQuantity = item.quantity + change;
-                    if (newQuantity >= 0 && newQuantity <= 10) {
+                    // JavaScript 수정: 0개일 때 삭제되지 않도록 조건 변경 (삭제는 x 버튼으로만)
+                    if (newQuantity >= 1 && newQuantity <= 10) { 
                         item.quantity = newQuantity;
-                        renderCartItems(); // 화면 다시 그리기
                     }
+                    renderCartItems(); 
                 }
             }
             
@@ -296,8 +322,8 @@
              * 아이템을 삭제하는 함수
              */
             function deleteItem(index) {
-                cartItems.splice(index, 1); // 배열에서 아이템 제거
-                renderCartItems(); // 화면 다시 그리기
+                cartItems.splice(index, 1);
+                renderCartItems();
             }
             
             /**
@@ -311,11 +337,10 @@
              * 주문 데이터를 서버로 전송하는 함수
              */
             async function postOrder() {
-                // 수량이 0보다 큰 상품만 필터링
                 const itemsToOrder = cartItems.filter(item => item.quantity > 0);
 
                 if (itemsToOrder.length === 0) {
-                    alert('주문할 상품이 없습니다. 수량을 확인해주세요.');
+                    alert('주문할 상품이 없습니다.');
                     return;
                 }
 
@@ -338,7 +363,7 @@
                     }
                 };
 
-                const serverUrl =  CONFIG.API_BASE_URL; // 로컬 테스트 서버 주소
+                const serverUrl = CONFIG.API_BASE_URL;
 
                 try {
                     const response = await fetch(serverUrl, {
@@ -356,8 +381,14 @@
 
                     if (responseData.type === "response" && responseData.payload.success) {
                         alert('주문이 성공적으로 접수되었습니다!');
-                        localStorage.removeItem('cartData'); // 주문 완료 후 장바구니 비우기
-                        window.location.href = 'page_callfood_3.html'; // 성공 페이지로 이동
+                        
+                        // 성공 응답을 localStorage에 저장
+                        localStorage.setItem('lastOrderResponse', JSON.stringify(responseData));
+                        
+                        // ✅ [제안] 주문이 완료되었으므로 장바구니 데이터를 삭제합니다.
+                        localStorage.removeItem('cartData'); 
+                        
+                        window.location.href = 'page_callfood_3.html';
                     } else {
                         throw new Error(responseData.payload.error_message || '알 수 없는 오류');
                     }
@@ -372,7 +403,9 @@
             
             // --- 이벤트 리스너 연결 ---
             backButton.addEventListener('click', () => {
-                window.location.href = 'page_callfood_1.html';
+                // JavaScript 수정: 뒤로 갈 때도 장바구니 상태를 저장
+                updateLocalStorage();
+                window.location.href = 'page_callfood_1.html'; // 이전 페이지는 메뉴 선택 페이지입니다.
             });
             
             orderButton.addEventListener('click', postOrder);
