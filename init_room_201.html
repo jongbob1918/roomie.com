@@ -110,9 +110,11 @@
     </style>
 </head>
 <body>
-
-    <header class="header">201호</header>
-
+    <script src="config.js"></script>
+    <script src="common.js"></script>
+    <header class="header">
+        <span class="room-number">201호</span>
+    </header> 
     <main class="main-content">
         <h1>ROOMIE</h1>
         <p class="subtitle">호텔 안내 & 주문 배송 서비스</p>
@@ -125,8 +127,9 @@
         <button class="grid-button" id="button_order_food">음식주문</button>
         <button class="grid-button" id="button_order_supply">비품주문</button>
     </div>
-    <script src="config.js"></script>
-    <script src="common.js"></script>
+    <div id="global-toast" class="global-toast hidden">
+        <img id="toast-full-image" class="toast-image" src="" alt="">
+    </div>
     <script>
         // --- 버튼 클릭 이벤트 리스너 설정 ---
 

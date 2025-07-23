@@ -1,415 +1,76 @@
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Roomie - 음식 배달 현황</title>
-    <link rel="stylesheet" href="common.css">
-    <style>
-        /* Google Fonts Import */
-        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap');
+/* Google Fonts Noto Sans KR 불러오기 */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap');
 
-        /* CSS Reset & Basic Setup */
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+/* --- 기본 스타일 리셋 --- */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
 
-        html, body {
-            width: 100%;
-            height: 100%;
-            font-family: 'Noto Sans KR', sans-serif;
-            font-size: 16px; /* 기준 폰트 크기 설정 */
-        }
+/* --- 전체 페이지 레이아웃 --- */
+body {
+    font-family: 'Noto Sans KR', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-size: cover;
+    background-position: center;
+}
 
-        /* Main Container */
-        .container {
-            width: 100%;
-            max-width: 486px; /* 최대 너비 제한 */
-            height: 100vh;
-            max-height: 801px; /* 최대 높이 제한 */
-            margin: 0 auto; /* 중앙 정렬 */
-            position: relative;
-            background: url('asset/v14_853.png'); /* 배경 이미지 경로 확인 */
-            background-size: cover;
-            background-position: center;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-            color: white;
-        }
+/* --- 컨테이너 (스마트폰 화면) --- */
+.container {
+    width: 100%;
+    max-width: 486px;
+    height: 801px;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
 
-        /* Header */
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1rem 1.5rem;
-            flex-shrink: 0;
-            background: rgba(0, 0, 0, 0.1);
-            position: relative; /* 자식 요소의 absolute 위치를 위한 기준 */
-            height: 70px; /* 헤더 높이 고정 */
-        }
-        
-        #button_cancel {
-            /* 기존 absolute 위치 제거 후 flex 아이템으로 배치 */
-            width: 37px;
-            height: 37px;
-            background: url('asset/v16_56.png') no-repeat center center;
-            background-size: contain;
-            border: none;
-            cursor: pointer;
-            z-index: 10; /* 다른 요소 위에 오도록 설정 */
-            position: absolute; /* 겹침 문제 해결을 위해 다시 absolute로 설정 */
-            left: 1rem;
-            top: 50%;
-            transform: translateY(-50%);
-        }
+/* --- 상단 헤더 (룸 번호) --- */
+.header {
+    padding: 70px 30px 0;
+    color: white;
+    font-size: 36px;
+    text-align: right;
+    font-weight: 500;
+}
 
-        .header-title {
-            font-size: 2rem;
-            font-weight: 200;
-            position: absolute; /* 중앙 정렬을 위해 absolute 사용 */
-            left: 50%;
-            transform: translateX(-50%);
-            white-space: nowrap; /* 텍스트가 줄바꿈되지 않도록 */
-        }
+/* --- 메인 컨텐츠 영역 --- */
+.main-content {
+    flex-grow: 1;
+    background-color: white;
+    margin: 20px 11px 0;
+    border-radius: 19px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
 
-        .header-location {
-            font-size: 1.8rem;
-            font-weight: 500;
-            margin-left: auto; /* ROOM_XX를 오른쪽으로 밀어냄 */
-        }
+.global-toast {
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(22, 21, 21, 0.88); /* 알림 배경색 */
+  padding: 0;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.6);
+  width: auto;
+  height: auto;
+  /* 💡 이 부분이 중요: 기본적으로 숨겨져 있어야 함 */
+  /* 만약 다른 곳에서 display:flex 등을 강제한다면 이 줄이 무시될 수 있습니다. */
+  /* hidden 클래스가 제대로 작동하는지 확인하세요. */
+}
 
-        /* Main Content Area */
-        .content {
-            flex-grow: 1;
-            display: flex;
-            align-items: flex-end; /* Aligns the card to the bottom */
-            padding: 1rem;
-        }
-
-        /* Delivery Status Card */
-        .status-card {
-            width: 100%;
-            background-color: white;
-            color: #474646;
-            border-radius: 19px;
-            padding: 2rem;
-            display: flex;
-            flex-direction: column;
-            gap: 1.5rem; /* This will be the main gap between sections inside the card. */
-        }
-
-        .status-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap; /* Allows wrapping on smaller screens */
-            border-bottom: 1px solid #eee;
-            padding-bottom: 1rem;
-        }
-
-        #task_type_name {
-            font-size: 1.8rem;
-            font-weight: 500;
-        }
-        
-        .status-summary {
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-            align-items: flex-end; /* 텍스트를 오른쪽으로 정렬 */
-        }
-
-        #estimated_time {
-            font-size: 1.5rem;
-            font-weight: 700;
-        }
-
-        #request_location_name {
-            font-size: 1.3rem;
-            font-weight: 700;
-            color: rgba(37, 62, 109, 0.4);
-            text-align: right;
-        }
-
-        .status-timeline {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-        }
-        
-        .timeline-item {
-            display: flex;
-            align-items: center;
-            gap: 1.5rem;
-        }
-        
-        .timeline-point {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .point {
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            background-color: #3B5E72; /* Active color */
-        }
-        
-        .line {
-            width: 4px;
-            height: 40px;
-            background-color: #3B5E72; /* Active color */
-        }
-        
-        .timeline-details {
-            flex-grow: 1;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .status-text {
-            font-size: 1.25rem;
-            font-weight: 400;
-        }
-
-        .status-time {
-            font-size: 1.25rem;
-            font-weight: 400;
-            color: #888;
-        }
-        
-        /* Inactive/Pending State */
-        .inactive .point,
-        .inactive .line {
-            background-color: #D9D9D9; /* Inactive color */
-        }
-        
-        .inactive .status-text {
-            color: #D9D9D9;
-        }
-
-        /* 마지막 항목의 막대 제거 */
-        .status-timeline .timeline-item:last-child .line {
-            background-color: transparent;
-        }
-
-    </style>
-</head>
-<body>
-
-    <div class="container">
-        <header class="header">
-            <button id="button_cancel" title="취소하고 돌아가기"></button>
-            <h1 class="header-title">ROOMIE</h1>
-            <div id="room_number" class="header-location"></div>
-        </header>
-
-        <main class="content">
-            <div class="status-card">
-                <div class="status-header">
-                    <h2 id="task_type_name"></h2>
-                    <div class="status-summary">
-                      <p id="estimated_time"></p>
-                      <p id="request_location_name"></p>
-                    </div>
-                </div>
-                
-                <div class="status-timeline">
-                    <div id="status_creation" class="timeline-item">
-                        <div class="timeline-point">
-                            <div class="point"></div>
-                            <div class="line"></div>
-                        </div>
-                        <div class="timeline-details">
-                            <span class="status-text">주문 접수됨</span>
-                            <span class="status-time"></span>
-                        </div>
-                    </div>
-                    <div id="status_assignment" class="timeline-item">
-                        <div class="timeline-point">
-                            <div class="point"></div>
-                            <div class="line"></div>
-                        </div>
-                        <div class="timeline-details">
-                            <span class="status-text">픽업중</span>
-                            <span class="status-time"></span>
-                        </div>
-                    </div>
-                    <div id="status_pickup" class="timeline-item">
-                        <div class="timeline-point">
-                            <div class="point"></div>
-                            <div class="line"></div>
-                        </div>
-                        <div class="timeline-details">
-                            <span class="status-text">배달중</span>
-                            <span class="status-time"></span>
-                        </div>
-                    </div>
-                    <div id="status_arrival" class="timeline-item">
-                        <div class="timeline-point">
-                            <div class="point"></div>
-                            <div class="line"></div> </div>
-                        <div class="timeline-details">
-                            <span class="status-text">배달완료</span>
-                            <span class="status-time"></span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </main>
-    </div>
-
-    <script src="config.js"></script>
-    <script src="common.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            
-            let orderHistoryInterval;
-
-            /**
-             * Formats an ISO 8601 date string into "오후 H:MM" format.
-             * @param {string | null} isoString - The date string to format.
-             * @returns {string} - The formatted time string or an empty string if input is null.
-             */
-            function formatTime(isoString) {
-                if (!isoString) return '';
-                const date = new Date(isoString);
-                let hours = date.getHours();
-                const minutes = date.getMinutes().toString().padStart(2, '0');
-                const ampm = hours >= 12 ? '오후' : '오전';
-                hours = hours % 12;
-                hours = hours ? hours : 12; // the hour '0' should be '12'
-                return `${ampm} ${hours}:${minutes}`;
-            }
-
-            /**
-             * Updates the UI based on the payload from the server.
-             * @param {object} payload - The payload object from the server response.
-             */
-            function updateStatus(payload) {
-                // Update header room number
-                document.getElementById('room_number').textContent = common.getLocationName(payload.request_location);
-                
-                // Update main card content
-                document.getElementById('task_type_name').textContent = payload.task_type_name;
-                document.getElementById('request_location_name').textContent = `목적지 ${common.getLocationName(payload.request_location)}`;
-
-                // Calculate and display estimated arrival time
-                const now = new Date();
-                const arrivalTime = new Date(now.getTime() + payload.estimated_time * 1000);
-                document.getElementById('estimated_time').textContent = `${formatTime(arrivalTime.toISOString())} 도착 예정`;
-                
-                // Update timeline statuses
-                const statuses = [
-                    { id: 'status_creation', time: payload.task_creation_time },
-                    { id: 'status_assignment', time: payload.robot_assignment_time },
-                    { id: 'status_pickup', time: payload.pickup_completion_time },
-                    { id: 'status_arrival', time: payload.delivery_arrival_time }
-                ];
-                
-                statuses.forEach(status => {
-                    const element = document.getElementById(status.id);
-                    const timeElement = element.querySelector('.status-time');
-                    
-                    if (status.time) {
-                        element.classList.remove('inactive');
-                        timeElement.textContent = formatTime(status.time);
-                    } else {
-                        // 값이 없는 경우 inactive 클래스 추가, 시간 텍스트 제거
-                        element.classList.add('inactive');
-                        timeElement.textContent = '';
-                    }
-                });
-            }
-
-            /**
-             * Simulates a request to the server and gets a response.
-             */
-            async function getOrderHistory() {
-                const lastOrderResponse = JSON.parse(localStorage.getItem('lastOrderResponse'));
-                const taskName = lastOrderResponse?.payload?.task_name || "TASK_001"; // localStorage에서 taskName 가져오기
-                const requestLocation = lastOrderResponse?.payload?.request_location || "ROOM_201";
-
-                const request = {
-                    "type": "request",
-                    "action": "get_order_history",
-                    "payload": {
-                        "request_location": requestLocation,
-                        "task_name": taskName,
-                        "task_type_name": "음식배달" // 이 값은 서버에서 응답으로 내려줘야 할 수도 있습니다.
-                    }
-                };
-                
-                console.log('Requesting order history:', request);
-                
-                // 실제 서버 요청 (fetch)
-                try {
-                    const serverUrl = CONFIG.API_BASE_URL; // CONFIG.API_BASE_URL 사용
-                    const response = await fetch(serverUrl, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(request),
-                    });
-
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! status: ${response.status}`);
-                    }
-                    
-                    const responseData = await response.json();
-                    console.log('Received server response:', responseData);
-                    
-                    if (responseData.type === "response" && responseData.action === "get_order_history") {
-                        updateStatus(responseData.payload);
-                    } else {
-                        console.error('Invalid or error response from server:', responseData);
-                        // 에러 처리 로직 추가
-                    }
-
-                } catch (error) {
-                    console.error('Error fetching order history:', error);
-                    // 네트워크 오류 또는 서버 응답 문제 처리
-                    // Mock 데이터로 대체 (디버깅용)
-                     const mockResponse = {
-                         "type": "response",
-                         "action": "get_order_history",
-                         "payload": {
-                             "request_location": "ROOM_201",
-                             "task_name": "TASK_BC8D92AE",
-                             "task_type_name": "음식배달",
-                             "estimated_time": 55, // in seconds
-                             "task_creation_time": "2025-07-23T17:52:11.397933+09:00",
-                             "robot_assignment_time": "2025-07-23T17:53:11.397933+09:00",
-                             "pickup_completion_time": "2025-07-23T17:57:11.397933+09:00",
-                             "delivery_arrival_time": null, // 이 부분이 null이므로 '배달완료'는 inactive로 표시
-                         }
-                     };
-                    updateStatus(mockResponse.payload);
-                }
-            }
-
-            // --- Event Listeners and Initial Setup ---
-
-            // Cancel button functionality
-            const cancelButton = document.getElementById('button_cancel');
-            cancelButton.addEventListener('click', () => {
-                console.log('Cancel button clicked. Stopping updates and redirecting.');
-                clearInterval(orderHistoryInterval); // Stop periodic requests
-                window.location.href = 'init_room_201.html'; // Redirect
-            });
-
-            // Initial call to populate the page
-            getOrderHistory(); 
-            
-            // Set up periodic requests every 15 seconds
-            orderHistoryInterval = setInterval(getOrderHistory, 15000);
-        });
-    </script>
-
-</body>
-</html>
+.global-toast.hidden {
+  display: none; /* ✅ 이 규칙이 가장 중요합니다. */
+}

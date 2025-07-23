@@ -2,6 +2,7 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
+    <link rel="stylesheet" href="common.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Roomie - 음식 주문</title> <style>
         /* Google Fonts Noto Sans KR 불러오기 */
@@ -204,6 +205,8 @@
     </style>
 </head>
 <body>
+    <script src="config.js"></script>
+    <script src="common.js"></script>
 
     <div class="container">
         <header class="header">
@@ -246,7 +249,11 @@
             <button id="button_cart" class="cart-button">장바구니 보기</button>
         </footer>
     </div>
-    
+    <div id="global-toast" class="global-toast hidden">
+        <img id="toast-full-image" class="toast-image" src="" alt="Notification">
+    </div>
+
+ 
     <script>
         // --- 데이터 관리 ---
         // localStorage에서 메뉴 데이터 불러오기, 없으면 빈 배열로 시작

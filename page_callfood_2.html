@@ -2,6 +2,7 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
+    <link rel="stylesheet" href="common.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>주문 상품</title>
     <style>
@@ -235,7 +236,12 @@
             <button id="order_food_button" class="order-button">주문하기</button>
         </div>
     </div>
+    <div id="global-toast" class="global-toast hidden">
+        <img id="toast-full-image" class="toast-image" src="" alt="Notification">
+    </div>
+
     <script src="config.js"></script>
+    <script src="common.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const cartItemsContainer = document.getElementById('cart-items-container');

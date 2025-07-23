@@ -2,6 +2,7 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
+    <link rel="stylesheet" href="common.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>주문 접수 완료</title>
     <style>
@@ -184,8 +185,12 @@
             <button id="button_cancel" class="close-button">닫기</button>
         </main>
     </div>
-    
+    <div id="global-toast" class="global-toast hidden">
+        <img id="toast-full-image" class="toast-image" src="" alt="Notification">
+    </div>
+
     <script src="config.js"></script>
+    <script src="common.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const estimatedTimeElement = document.getElementById('estimated-time');
