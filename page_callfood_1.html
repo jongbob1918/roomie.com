@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>음식 주문</title>
-    <style>
+    <title>Roomie - 음식 주문</title> <style>
         /* Google Fonts Noto Sans KR 불러오기 */
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap');
 
@@ -40,11 +39,22 @@
 
         /* --- 상단 헤더 (룸 번호) --- */
         .header {
+            display: flex; /* Flexbox 추가 */
+            justify-content: space-between; /* 양 끝 정렬 */
+            align-items: center; /* 세로 중앙 정렬 */
             padding: 70px 30px 0;
             color: white;
             font-size: 36px;
             text-align: right;
             font-weight: 500;
+        }
+
+        .header .logo {
+            font-weight: 300; /* ROOMIE 텍스트 얇게 */
+        }
+
+        .header .room-number {
+            font-weight: 500; /* 202호 텍스트 중간 굵기 */
         }
 
         /* --- 메인 컨텐츠 영역 --- */
@@ -53,7 +63,8 @@
             background-color: white;
             margin: 20px 11px 0;
             border-radius: 19px;
-            padding: 20px;
+            padding: 20px; /* 내부 패딩 유지 */
+            padding-top: 50px; /* 뒤로가기 버튼과 메뉴 목록 사이 공간 확보 */
             display: flex;
             flex-direction: column;
             position: relative;
@@ -62,7 +73,7 @@
         /* 뒤로가기 버튼 */
         .back-button {
             position: absolute;
-            top: 15px;
+            top: 15px; /* main-content 상단에 배치 */
             left: 15px;
             width: 39px;
             height: 39px;
@@ -74,12 +85,12 @@
 
         /* 메뉴 아이템 목록 */
         .menu-list {
-            margin-top: 50px;
+            /* margin-top: 50px; 제거됨. padding-top이 main-content에 적용됨. */
             flex-grow: 1;
             overflow-y: auto; /* 내용이 많아지면 스크롤 */
         }
 
-        /* 개별 메뉴 아이템 */
+        /* 기존 CSS는 유지 */
         .menu-item {
             display: flex;
             align-items: center;
@@ -92,7 +103,7 @@
             background-color: #f5f5f5;
             border-radius: 10px;
             margin-right: 20px;
-            flex-shrink: 0; /* 이미지가 찌그러지지 않도록 설정 */
+            flex-shrink: 0;
         }
 
         .menu-details {
@@ -104,7 +115,6 @@
         }
 
         .menu-name {
-            /* [수정] 반응형 폰트 적용 */
             font-size: clamp(20px, 4.5vw, 24px);
             font-weight: 500;
             color: #5b5b5b;
@@ -142,7 +152,6 @@
             border: none;
             padding: 8px 24px;
             border-radius: 5px;
-            /* [수정] 반응형 폰트 적용 */
             font-size: clamp(16px, 4vw, 20px);
             font-weight: 300;
             cursor: pointer;
@@ -156,7 +165,7 @@
 
         /* --- 하단 푸터 (총액, 장바구니) --- */
         .footer {
-            width: calc(100% - 22px); /* 컨테이너 좌우 마진만큼 빼기 */
+            width: calc(100% - 22px);
             height: 69px;
             background-color: #3b5e72;
             position: absolute;
@@ -164,10 +173,9 @@
             left: 11px;
             display: flex;
             align-items: center;
-            justify-content: space-between; /* [수정] 양쪽 끝으로 정렬 */
+            justify-content: space-between;
             color: white;
-            padding: 0 25px; /* [수정] 내부 좌우 여백 추가 */
-            /* [수정] 반응형 폰트 적용 */
+            padding: 0 25px;
             font-size: clamp(20px, 4.5vw, 24px);
         }
 
@@ -180,7 +188,7 @@
             height: 40px;
             background-color: white;
             opacity: 0.7;
-            margin: 0 15px; /* [수정] 좌우 마진 추가 */
+            margin: 0 15px;
         }
 
         .cart-button {
@@ -190,23 +198,24 @@
             border: none;
             color: white;
             font-family: 'Noto Sans KR', sans-serif;
-            font-size: inherit; /* [수정] 부모(footer)의 폰트 크기 상속 */
-            white-space: nowrap; /* [추가] 텍스트가 길어져도 줄바꿈 방지 */
+            font-size: inherit;
+            white-space: nowrap;
         }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <header class="header">202호</header>
+        <header class="header">
+            <span class="logo">ROOMIE</span> <span class="room-number">202호</span>
+        </header>
 
         <main class="main-content">
             <div id="back_button_1" class="back-button"></div>
 
             <div class="menu-list">
                 <div class="menu-item" data-id="1">
-                    <div id="spaghetti-image" class="menu-image"></div>
-                    <div class="menu-details">
+                    <div id="spaghetti-image" class="menu-image" style="background-image: url('asset/v13_168.png');"></div> <div class="menu-details">
                         <span class="menu-name">스파게티</span>
                         <div class="quantity-control">
                             <button id="minus_1" class="quantity-btn minus-btn"></button>
@@ -218,8 +227,7 @@
                 </div>
 
                 <div class="menu-item" data-id="2">
-                     <div id="pizza-image" class="menu-image"></div>
-                    <div class="menu-details">
+                     <div id="pizza-image" class="menu-image" style="background-image: url('asset/v13_170.png');"></div> <div class="menu-details">
                         <span class="menu-name">피자</span>
                         <div class="quantity-control">
                             <button id="minus_2" class="quantity-btn minus-btn"></button>

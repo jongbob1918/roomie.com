@@ -24,20 +24,9 @@
             background-position: center;
             height: 100vh;
             display: flex;
-            justify-content: center;
-            align-items: flex-end; /* 컨테이너를 하단에 정렬 */
-        }
-
-        .container {
-            width: 100%;
-            max-width: 480px;
-            height: 90%;
-            background-color: var(--main-bg-color);
-            border-radius: 20px 20px 0 0;
-            display: flex;
-            flex-direction: column;
-            box-shadow: 0 -5px 15px rgba(0,0,0,0.1);
-            position: relative; /* 헤더의 absolute 포지셔닝 기준 */
+            flex-direction: column; /* 세로 정렬로 변경 */
+            justify-content: flex-start; /* 상단 정렬 */
+            align-items: center;
         }
 
         .header {
@@ -45,11 +34,11 @@
             justify-content: space-between;
             align-items: center;
             padding: 20px;
+            padding-top: 70px; /* 상단 여백 추가 */
             color: white;
-            position: absolute;
-            top: -70px; /* 컨테이너 상단 위로 배치 */
-            left: 0;
-            right: 0;
+            width: 100%;
+            max-width: 480px; /* 컨테이너와 동일한 너비 */
+            /* position: absolute; top: -70px; 제거 */
         }
 
         .header h1 {
@@ -62,6 +51,19 @@
             font-size: 28px;
             font-weight: 500;
         }
+
+        .container {
+            width: 100%;
+            max-width: 480px;
+            height: 90%; /* 또는 원하는 비율로 조정 */
+            background-color: var(--main-bg-color);
+            border-radius: 20px 20px 0 0;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 -5px 15px rgba(0,0,0,0.1);
+            position: relative; /* 자식 요소의 absolute 포지셔닝 기준 */
+        }
+
 
         .cart-header {
             display: flex;
@@ -207,12 +209,11 @@
 </head>
 <body>
 
-    <div class="container">
-        <header class="header">
-            <h1>ROOMIE</h1>
-            <div class="room-number">202호</div>
-        </header>
+    <header class="header"> <h1>ROOMIE</h1>
+        <div class="room-number">202호</div>
+    </header>
 
+    <div class="container">
         <div class="cart-header">
             <img id="back_button_1" src="asset/v14_863.png" alt="뒤로가기">
             <h2 class="cart-title">주문상품</h2>
@@ -264,7 +265,16 @@
                         itemElement.classList.add('item');
                         itemElement.dataset.itemIndex = index;
 
-                        const imageUrl = `asset/${item.name === '스파게티' ? 'v14_857.png' : 'v14_875.png'}`;
+                        // 이미지 경로를 동적으로 설정합니다.
+                        let imageUrl;
+                        if (item.name === '스파게티') {
+                            imageUrl = 'asset/v14_857.png';
+                        } else if (item.name === '피자') {
+                            imageUrl = 'asset/v14_875.png';
+                        } else {
+                            // 다른 음식 항목에 대한 기본 또는 대체 이미지 경로를 설정합니다.
+                            imageUrl = 'asset/default_food.png'; // 기본 이미지 경로 (필요시 생성)
+                        }
 
                         itemElement.innerHTML = `
                             <div class="item-image" style="background-image: url('${imageUrl}')"></div>

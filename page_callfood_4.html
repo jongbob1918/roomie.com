@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Roomie - 음식 배달 현황</title>
+    <link rel="stylesheet" href="common.css">
     <style>
         /* Google Fonts Import */
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap');
@@ -30,8 +31,9 @@
             max-height: 801px; /* 최대 높이 제한 */
             margin: 0 auto; /* 중앙 정렬 */
             position: relative;
-            background: url('data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAYABgAAD/2wBDAAIBAQIBAQICAgICAgICAwUDAwMDAwYEBAMFBwYHBwcGBwcICQsJCAgKCAcHCg0KCgsMDAwMBwkODw0MDgsMDAz/2wBDAQICAgMDAwYDAwYMCAcIDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAz/wAARCAMgAlgDASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1VXV1hZWmNkZWZnaGlqc3R1dnd4eXqCg4SFhoeIiYqSk5SVlpeYmZqio6Slpqeoqaqys7S1tre4ubrCw8TFxsfIycrS09TV1tfY2dri4+Tl5ufo6ery8/T19vf4+fr/2gAMAwEAAhEDEQA/AP38ooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigA" />') no-repeat center center;
+            background: url('asset/v14_853.png'); /* 배경 이미지 경로 확인 */
             background-size: cover;
+            background-position: center;
             display: flex;
             flex-direction: column;
             overflow: hidden;
@@ -46,28 +48,38 @@
             padding: 1rem 1.5rem;
             flex-shrink: 0;
             background: rgba(0, 0, 0, 0.1);
+            position: relative; /* 자식 요소의 absolute 위치를 위한 기준 */
+            height: 70px; /* 헤더 높이 고정 */
+        }
+        
+        #button_cancel {
+            /* 기존 absolute 위치 제거 후 flex 아이템으로 배치 */
+            width: 37px;
+            height: 37px;
+            background: url('asset/v16_56.png') no-repeat center center;
+            background-size: contain;
+            border: none;
+            cursor: pointer;
+            z-index: 10; /* 다른 요소 위에 오도록 설정 */
+            position: absolute; /* 겹침 문제 해결을 위해 다시 absolute로 설정 */
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
         }
 
         .header-title {
             font-size: 2rem;
-            font-weight: 300;
+            font-weight: 200;
+            position: absolute; /* 중앙 정렬을 위해 absolute 사용 */
+            left: 50%;
+            transform: translateX(-50%);
+            white-space: nowrap; /* 텍스트가 줄바꿈되지 않도록 */
         }
 
         .header-location {
             font-size: 1.8rem;
             font-weight: 500;
-        }
-
-        #button_cancel {
-            position: absolute;
-            top: 1rem;
-            left: 1rem;
-            width: 37px;
-            height: 37px;
-            background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACUAAAAlCAQAAADtHqC3AAAA1ElEQVRIx2P8//8/Awy/v59BPop/ggETwXDAA8Y/MIwD/P3/D8P/z/Cf4V8GBmYjecy/wcDIwMjAzMCK4QcDWIAJYjAwMDEgIuofGfgZGLiYGBgZWBgyMDIwMhAaYDL8Z2DkYmBgZgAzGbgYWDgYWfiZAUYRDH8ZGBgZmIYx/A/8//8/w39e/hUMDPx/Bl5G/n9G/r8G5kP8V4YNrGTEgM3Iy8DIwMgATYCK4T8DEwMDEyMDMwMTM4MLgJkAggEJAQDz2E53P/V1bAAAAABJRU5ErkJggg==') no-repeat center center;
-            background-size: contain;
-            border: none;
-            cursor: pointer;
+            margin-left: auto; /* ROOM_XX를 오른쪽으로 밀어냄 */
         }
 
         /* Main Content Area */
@@ -87,9 +99,7 @@
             padding: 2rem;
             display: flex;
             flex-direction: column;
-            gap: 1.5rem; /*
-  *This will be the main gap between sections inside the card.
- */
+            gap: 1.5rem; /* This will be the main gap between sections inside the card. */
         }
 
         .status-header {
@@ -110,6 +120,7 @@
             display: flex;
             flex-direction: column;
             gap: 0.5rem;
+            align-items: flex-end; /* 텍스트를 오른쪽으로 정렬 */
         }
 
         #estimated_time {
@@ -179,15 +190,14 @@
             background-color: #D9D9D9; /* Inactive color */
         }
         
-        .inactive .status-text,
-        .inactive .status-time {
+        .inactive .status-text {
             color: #D9D9D9;
         }
-        
-        .inactive .line {
-           background-color: transparent; /* Last item has no line */
-        }
 
+        /* 마지막 항목의 막대 제거 */
+        .status-timeline .timeline-item:last-child .line {
+            background-color: transparent;
+        }
 
     </style>
 </head>
@@ -244,8 +254,7 @@
                     <div id="status_arrival" class="timeline-item">
                         <div class="timeline-point">
                             <div class="point"></div>
-                            <div class="line inactive"></div>
-                        </div>
+                            <div class="line"></div> </div>
                         <div class="timeline-details">
                             <span class="status-text">배달완료</span>
                             <span class="status-time"></span>
@@ -256,49 +265,13 @@
         </main>
     </div>
 
+    <script src="config.js"></script>
+    <script src="common.js"></script>
     <script>
-        // --- Placeholder for config.js ---
-        const config = {
-            api: {
-                // In a real scenario, this would be a WebSocket or HTTP endpoint
-                serverUrl: 'ws://test-server.example.com' 
-            }
-        };
-
-        // --- Placeholder for common.js ---
-        const common = {
-            // As requested, location_name is referenced dynamically.
-            locations: {
-                "ROOM_201": "202호" 
-                // Add other locations as needed
-            },
-            getLocationName: function(locationId) {
-                return this.locations[locationId] || "알 수 없는 위치";
-            }
-        };
-
-
         document.addEventListener('DOMContentLoaded', function() {
             
             let orderHistoryInterval;
 
-            // --- Mock Server Response ---
-            // This simulates the response from the server.
-            const mockResponse = {
-                "type": "response",
-                "action": "get_order_history",
-                "payload": {
-                    "request_location": "ROOM_201",
-                    "task_name": "TASK_001",
-                    "task_type_name": "음식배달",
-                    "estimated_time": 55, // in seconds
-                    "task_creation_time": "2025-07-22T19:23:16+09:00",
-                    "robot_assignment_time": "2025-07-22T19:40:00+09:00",
-                    "pickup_completion_time": null,
-                    "delivery_arrival_time": null,
-                }
-            };
-            
             /**
              * Formats an ISO 8601 date string into "오후 H:MM" format.
              * @param {string | null} isoString - The date string to format.
@@ -343,10 +316,12 @@
                 statuses.forEach(status => {
                     const element = document.getElementById(status.id);
                     const timeElement = element.querySelector('.status-time');
+                    
                     if (status.time) {
                         element.classList.remove('inactive');
                         timeElement.textContent = formatTime(status.time);
                     } else {
+                        // 값이 없는 경우 inactive 클래스 추가, 시간 텍스트 제거
                         element.classList.add('inactive');
                         timeElement.textContent = '';
                     }
@@ -356,23 +331,66 @@
             /**
              * Simulates a request to the server and gets a response.
              */
-            function getOrderHistory() {
+            async function getOrderHistory() {
+                const lastOrderResponse = JSON.parse(localStorage.getItem('lastOrderResponse'));
+                const taskName = lastOrderResponse?.payload?.task_name || "TASK_001"; // localStorage에서 taskName 가져오기
+                const requestLocation = lastOrderResponse?.payload?.request_location || "ROOM_201";
+
                 const request = {
                     "type": "request",
                     "action": "get_order_history",
                     "payload": {
-                        "request_location": "ROOM_201",
-                        "task_name": "TASK_001",
-                        "task_type_name": "음식배달"
+                        "request_location": requestLocation,
+                        "task_name": taskName,
+                        "task_type_name": "음식배달" // 이 값은 서버에서 응답으로 내려줘야 할 수도 있습니다.
                     }
                 };
                 
                 console.log('Requesting order history:', request);
                 
-                // In a real application, you would send this request over a WebSocket or HTTP.
-                // Here, we'll just use the mock response.
-                console.log('Received mock response:', mockResponse);
-                updateStatus(mockResponse.payload);
+                // 실제 서버 요청 (fetch)
+                try {
+                    const serverUrl = CONFIG.API_BASE_URL; // CONFIG.API_BASE_URL 사용
+                    const response = await fetch(serverUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(request),
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    
+                    const responseData = await response.json();
+                    console.log('Received server response:', responseData);
+                    
+                    if (responseData.type === "response" && responseData.action === "get_order_history") {
+                        updateStatus(responseData.payload);
+                    } else {
+                        console.error('Invalid or error response from server:', responseData);
+                        // 에러 처리 로직 추가
+                    }
+
+                } catch (error) {
+                    console.error('Error fetching order history:', error);
+                    // 네트워크 오류 또는 서버 응답 문제 처리
+                    // Mock 데이터로 대체 (디버깅용)
+                     const mockResponse = {
+                         "type": "response",
+                         "action": "get_order_history",
+                         "payload": {
+                             "request_location": "ROOM_201",
+                             "task_name": "TASK_BC8D92AE",
+                             "task_type_name": "음식배달",
+                             "estimated_time": 55, // in seconds
+                             "task_creation_time": "2025-07-23T17:52:11.397933+09:00",
+                             "robot_assignment_time": "2025-07-23T17:53:11.397933+09:00",
+                             "pickup_completion_time": "2025-07-23T17:57:11.397933+09:00",
+                             "delivery_arrival_time": null, // 이 부분이 null이므로 '배달완료'는 inactive로 표시
+                         }
+                     };
+                    updateStatus(mockResponse.payload);
+                }
             }
 
             // --- Event Listeners and Initial Setup ---
