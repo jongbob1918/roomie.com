@@ -12,6 +12,7 @@ import config
 
 # 클라이언트에 메시지를 전송할 수 있는 활성 WebSocket 연결들을 저장하는 리스트
 active_connections: list[WebSocket] = []
+notification_type = 0
 
 
 # --- FastAPI 앱 및 미들웨어 설정 ---
@@ -88,11 +89,14 @@ async def websocket_endpoint(websocket: WebSocket):
 
 # --- 이벤트 브로드캐스트 함수 ---
 async def broadcast_event(event_data: dict):
+    print(f"이벤트 전송됨: {event_data} to {connection.client}")
     # 연결이 끊긴 소켓을 추적하여 제거하기 위한 리스트
     to_remove = []
     for connection in active_connections:
+        
         try:
             await connection.send_text(json.dumps(event_data))
+
             # print(f"이벤트 전송됨: {event_data} to {connection.client}") # 디버깅용
         except Exception as e:
             print(f"메시지 전송 실패 (연결 끊김 예상): {connection.client}, 오류: {e}")
@@ -105,6 +109,7 @@ async def broadcast_event(event_data: dict):
 
 # --- 주기적으로 알림 이벤트를 전송하는 백그라운드 태스크 ---
 async def send_periodic_notifications():
+    global notification_type
     while True:
         await asyncio.sleep(20)  # 20초마다 실행
 
@@ -122,7 +127,7 @@ async def send_periodic_notifications():
                 "action": "robot_arrival_completion",
                 "payload": {
                     "task_name": "TASK_006",
-                    "location_name": "ROOM_102"
+                    "location_name": "ROOM_201"
                 }
             },
             {
@@ -130,7 +135,7 @@ async def send_periodic_notifications():
                 "action": "delivery_completion",
                 "payload": {
                     "task_name": "TASK_001",
-                    "request_location": "ROOM_102"
+                    "request_location": "ROOM_201"
                 }
             },
             {
@@ -138,7 +143,7 @@ async def send_periodic_notifications():
                 "action": "task_timeout_return",
                 "payload": {
                     "task_name": "TASK_006",
-                    "location_name": "ROOM_102"
+                    "location_name": "ROOM_201"
                 }
             }
         ]

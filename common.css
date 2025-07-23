@@ -53,24 +53,26 @@ body {
 
 .global-toast {
   position: fixed;
-  bottom: 30px;
+  top: 100px;
   left: 50%;
   transform: translateX(-50%);
-  background: rgba(22, 21, 21, 0.88); /* 알림 배경색 */
-  padding: 0;
   border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 9999;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.6);
   width: auto;
+  max-width: 80%;
   height: auto;
-  /* 💡 이 부분이 중요: 기본적으로 숨겨져 있어야 함 */
-  /* 만약 다른 곳에서 display:flex 등을 강제한다면 이 줄이 무시될 수 있습니다. */
-  /* hidden 클래스가 제대로 작동하는지 확인하세요. */
+}
+
+/* ✅ 모바일 화면에서는 더 작게 표시 */
+@media (max-width: 600px) {
+  .global-toast {
+    max-width: 90%;
+  }
 }
 
 .global-toast.hidden {
-  display: none; /* ✅ 이 규칙이 가장 중요합니다. */
+  display: none; 
 }

@@ -26,23 +26,16 @@ window.showToast = function(imagePath, type = 'default') {
 
     if (!toast || !fullImageElement) return;
 
-    Object.assign(toast.style, {
-        position: 'fixed',
-        bottom: '30px',
-        left: '50%',
-        transform: 'translateX(-50%)',
-    });
-
     fullImageElement.src = imagePath;
     fullImageElement.alt = '';
 
     toast.className = 'global-toast';
-    toast.classList.add(type); // success, error 등
+    toast.classList.add(type);     // 'success', 'error' 등
     toast.classList.remove('hidden');
 
     setTimeout(() => {
         toast.classList.add('hidden');
-        fullImageElement.src = ''; // 이미지 제거
+        fullImageElement.src = '';
     }, 3000);
 }
 
@@ -115,19 +108,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
                     if (data.type === "event") {
                         switch (data.action) {
-                            case "timeout_return_notification":
+                            case "task_timeout_return":
                                 showToast('asset/timeout_return_notification.png');
                                 break;
-                            case "delivery_completed":
+                            case "delivery_completion":
                                 showToast('asset/delivery_completed_notification.png');
                                 break;
-                            case "robot_arrived_pickup":
+                            case "robot_arrival_completion":
                                 showToast('asset/robot_arrived_pickup.png');
                                 break;
-                            // 추가적인 이벤트 타입이 있다면 여기에 case 추가
-                            // case "call_request_acceptance":
-                            //     showToast('asset/call_accepted.png'); 
-                            //     break;
+                            case "call_request_acceptance":
+                                showToast('asset/call_accepted.png');
+                                break;
                             default:
                                 console.warn("알 수 없는 이벤트 액션:", data.action);
                         }
