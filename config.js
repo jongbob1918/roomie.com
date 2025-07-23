@@ -2,6 +2,6 @@
 const CONFIG = {
     // ❗️ 여기만 수정하면 모든 페이지의 서버 주소가 변경됩니다.
     // 수정: 로컬 테스트를 위해 '127.0.0.1' 주소로 변경합니다.
-    API_BASE_URL: "https://90cb335723c9.ngrok-free.app/api",
+    API_BASE_URL: "https://595340565882.ngrok-free.app/api",
     DEFAULT_ROOM_ID: "201호"
 };
