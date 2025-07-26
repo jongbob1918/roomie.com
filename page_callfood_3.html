@@ -189,80 +189,77 @@
         <img id="toast-full-image" class="toast-image" src="" alt="Notification">
     </div>
 
-    <script src="config.js"></script>
+        <script src="config.js"></script>
     <script src="common.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const estimatedTimeElement = document.getElementById('estimated-time');
             const cancelButton = document.getElementById('button_cancel');
             const historyButton = document.getElementById('call_order_food_history_button');
-
-            // ✅ [수정] roomNumberElement 변수를 먼저 정의합니다.
             const roomNumberElement = document.querySelector('.room-number');
 
-            // config.js에 정의된 방 번호를 가져와 헤더에 삽입합니다.
             if (roomNumberElement && typeof CONFIG !== 'undefined') {
-                roomNumberElement.textContent = CONFIG.DEFAULT_ROOM_ID || '201호';
+                roomNumberElement.textContent = CONFIG.DEFAULT_ROOM_ID || '102호';
             }
 
-            // localStorage에서 마지막 주문 정보를 가져옵니다.
             const lastOrderResponse = JSON.parse(localStorage.getItem('lastOrderResponse'));
-            // 예상 대기 시간을 업데이트합니다.
             if (lastOrderResponse && lastOrderResponse.payload && lastOrderResponse.payload.estimated_time) {
                 const time = lastOrderResponse.payload.estimated_time;
                 estimatedTimeElement.textContent = `${time}분`;
             } else {
-                estimatedTimeElement.textContent = '20분';
+                estimatedTimeElement.textContent = '20분'; // 기본값
             }
 
-            // '닫기' 버튼 클릭 시 메인 화면으로 이동합니다.
             cancelButton.addEventListener('click', () => {
                 window.location.href = 'init_room_201.html';
             });
             
             historyButton.addEventListener('click', async () => {
-                // ✅ 1. localStorage에서 직전 주문 성공 응답을 가져옵니다.
-                const lastOrderResponse = JSON.parse(localStorage.getItem('lastOrderResponse'));
-                const taskName = lastOrderResponse?.payload?.task_name || "TASK_001"; // 기본값은 유지
+                const lastOrderData = JSON.parse(localStorage.getItem('lastOrderResponse'));
+                if (!lastOrderData || !lastOrderData.payload || !lastOrderData.payload.task_name) {
+                    alert('조회할 주문 정보가 없습니다.');
+                    return;
+                }
+                
+                const taskName = lastOrderData.payload.task_name;
+                const locationName = lastOrderData.payload.location_name;
 
                 const requestData = {
                     type: "request",
                     action: "get_order_history",
                     payload: {
-                        request_location: "ROOM_201",
-                        // ✅ 2. 여기서 하드코딩된 "TASK_001" 대신 localStorage에서 가져온 taskName을 사용합니다.
+                        request_location: locationName,
                         task_name: taskName, 
-                        task_type_name: "음식배달"
+                        task_type_name: "음식배달" // 이 값은 현재 요청에 필요 없을 수 있으나, 모델에 정의되어 있으므로 포함
                     }
                 };
                 
-                const serverUrl = CONFIG.API_BASE_URL;
+                // ✅ 수정: API 엔드포인트 경로를 정확하게 지정합니다.
+                const serverUrl = `${CONFIG.API_BASE_URL}/get_order_history`;
 
                 try {
                     const response = await fetch(serverUrl, {
                         method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
+                        headers: {'Content-Type': 'application/json'},
                         body: JSON.stringify(requestData)
                     });
 
                     if (!response.ok) {
-                        throw new Error(`HTTP error! status: ${response.status}`);
+                        const errorData = await response.json();
+                        throw new Error(errorData.detail || `HTTP error! status: ${response.status}`);
                     }
                     
                     const responseData = await response.json();
 
                     if (responseData.type === 'response' && responseData.action === 'get_order_history') {
-                        // ✅ 3. 다음 페이지(page_callfood_4.html)가 이 정보를 사용할 수 있도록 저장합니다.
                         localStorage.setItem('lastHistoryResponse', JSON.stringify(responseData));
                         window.location.href = 'page_callfood_4.html';
                     } else {
-                        throw new Error(responseData.message || 'Invalid server response');
+                        throw new Error(responseData.message || '유효하지 않은 서버 응답');
                     }
                 } catch (error) {
-                    console.error('Error fetching order history:', error);
-                    alert('주문 내역을 불러오는 데 실패했습니다.');
+                    console.error('주문 내역 조회 실패:', error);
+                    alert(`주문 내역을 불러오는 데 실패했습니다: ${error.message}`);
                 }
             });
         });

@@ -210,36 +210,12 @@
 
     <div class="container">
         <header class="header">
-            <span class="logo">ROOMIE</span> <span class="room-number">202호</span>
+            <span class="logo">ROOMIE</span> <span class="room-number"></span>
         </header>
 
         <main class="main-content">
             <div id="back_button_1" class="back-button"></div>
-
-            <div class="menu-list">
-                <div class="menu-item" data-id="1">
-                    <div id="spaghetti-image" class="menu-image" style="background-image: url('asset/v13_168.png');"></div> <div class="menu-details">
-                        <span class="menu-name">스파게티</span>
-                        <div class="quantity-control">
-                            <button id="minus_1" class="quantity-btn minus-btn"></button>
-                            <span id="quantity_1" class="quantity">0</span>
-                            <button id="plus_1" class="quantity-btn plus-btn"></button>
-                        </div>
-                        <button id="select_button_1" class="select-button">선택</button>
-                    </div>
-                </div>
-
-                <div class="menu-item" data-id="2">
-                     <div id="pizza-image" class="menu-image" style="background-image: url('asset/v13_170.png');"></div> <div class="menu-details">
-                        <span class="menu-name">피자</span>
-                        <div class="quantity-control">
-                            <button id="minus_2" class="quantity-btn minus-btn"></button>
-                            <span id="quantity_2" class="quantity">0</span>
-                            <button id="plus_2" class="quantity-btn plus-btn"></button>
-                        </div>
-                        <button id="select_button_2" class="select-button">선택</button>
-                    </div>
-                </div>
+            <div class="menu-list" id="menu-list-container">
             </div>
         </main>
 
@@ -252,114 +228,138 @@
     <div id="global-toast" class="global-toast hidden">
         <img id="toast-full-image" class="toast-image" src="" alt="Notification">
     </div>
-
  
     <script>
-        // --- 데이터 관리 ---
-        // localStorage에서 메뉴 데이터 불러오기, 없으면 빈 배열로 시작
-        const serverMenu = JSON.parse(localStorage.getItem('foodMenuData')) || [];
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- 데이터 관리 ---
+            const serverMenu = JSON.parse(localStorage.getItem('foodMenuData')) || [];
 
-        // 서버 데이터를 프론트엔드에서 사용할 형식으로 변환
-        const menuData = serverMenu.map((item, index) => ({
-            id: index + 1, // id를 동적으로 부여
-            name: item.food_name,
-            price: item.price,
-            quantity: 0
-        }));
+            // 서버 데이터를 프론트엔드에서 사용할 형식으로 변환 (id, quantity 추가)
+            const menuData = serverMenu.map((item, index) => ({
+                id: index + 1,
+                name: item.food_name,
+                price: item.price,
+                image: item.image, // 이미지 경로 추가
+                quantity: 0
+            }));
 
-        let cartItems = [];
+            let cartItems = JSON.parse(localStorage.getItem('cartData')) || [];
 
-        // --- DOM 요소 참조 ---
-        const backButton = document.getElementById('back_button_1');
-        const cartButton = document.getElementById('button_cart');
-        const totalPriceElement = document.getElementById('total_price');
+            // --- DOM 요소 참조 ---
+            const menuListContainer = document.getElementById('menu-list-container');
+            const cartButton = document.getElementById('button_cart');
+            const totalPriceElement = document.getElementById('total_price');
 
-        // --- 함수 정의 ---
-
-        /** 총액을 계산하고 화면에 업데이트하는 함수 */
-        function updateTotalPrice() {
-            const total = menuData.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-            totalPriceElement.textContent = `총 ${total.toLocaleString()}원`;
-        }
-        
-        /** [추가됨] 장바구니 버튼의 텍스트를 업데이트하는 함수 */
-        function updateCartButtonText() {
-            const itemCount = cartItems.length;
-            cartButton.textContent = itemCount > 0 ? `장바구니 보기 (${itemCount})` : '장바구니 보기';
-        }
-
-        /** 수량 변경 처리 함수 */
-        function handleQuantityChange(id, change) {
-            const item = menuData.find(menu => menu.id === id);
-            if (!item) return;
-
-            const newQuantity = item.quantity + change;
-            
-            if (newQuantity >= 0 && newQuantity <= 10) {
-                item.quantity = newQuantity;
-                document.getElementById(`quantity_${id}`).textContent = item.quantity;
-                updateTotalPrice();
-            }
-        }
-        
-        /** '선택' 버튼 처리 함수 */
-        function handleSelect(id) {
-            const item = menuData.find(menu => menu.id === id);
-            const selectButton = document.getElementById(`select_button_${id}`);
-            
-            if (!item || item.quantity === 0) {
-                alert('수량을 1개 이상 선택해주세요.');
-                return;
+            /** 메뉴 아이템을 동적으로 생성하고 화면에 렌더링하는 함수 */
+            function renderMenu() {
+                menuListContainer.innerHTML = ''; // 기존 목록 초기화
+                menuData.forEach(item => {
+                    const menuItemElement = document.createElement('div');
+                    menuItemElement.className = 'menu-item';
+                    menuItemElement.dataset.id = item.id;
+                    
+                    // 서버에서 받은 이미지 경로(item.image)를 사용합니다.
+                    menuItemElement.innerHTML = `
+                        <div class="menu-image" style="background-image: url('${item.image}');"></div>
+                        <div class="menu-details">
+                            <span class="menu-name">${item.name}</span>
+                            <div class="quantity-control">
+                                <button class="quantity-btn minus-btn"></button>
+                                <span class="quantity">${item.quantity}</span>
+                                <button class="quantity-btn plus-btn"></button>
+                            </div>
+                            <button class="select-button">선택</button>
+                        </div>
+                    `;
+                    menuListContainer.appendChild(menuItemElement);
+                });
+                addEventListenersToMenuItems(); // 동적으로 생성된 요소에 이벤트 리스너 추가
             }
 
-            const existingCartItemIndex = cartItems.findIndex(cartItem => cartItem.name === item.name);
+            /** 총액을 계산하고 화면에 업데이트하는 함수 */
+            function updateTotalPrice() {
+                const total = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+                totalPriceElement.textContent = `총 ${total.toLocaleString()}원`;
+            }
+            
+            /** 장바구니 버튼의 텍스트를 업데이트하는 함수 */
+            function updateCartButtonText() {
+                const itemCount = cartItems.length;
+                cartButton.textContent = itemCount > 0 ? `장바구니 보기 (${itemCount})` : '장바구니 보기';
+            }
 
-            if (existingCartItemIndex > -1) {
-                cartItems[existingCartItemIndex].quantity = item.quantity;
-            } else {
-                cartItems.push({
-                    name: item.name,
-                    quantity: item.quantity,
-                    price: item.price
+            /** 수량 변경 처리 함수 */
+            function handleQuantityChange(id, change) {
+                const item = menuData.find(menu => menu.id === id);
+                if (!item) return;
+
+                const newQuantity = item.quantity + change;
+                if (newQuantity >= 0 && newQuantity <= 10) {
+                    item.quantity = newQuantity;
+                    document.querySelector(`.menu-item[data-id='${id}'] .quantity`).textContent = item.quantity;
+                }
+            }
+            
+            /** '선택' 버튼 처리 함수 */
+            function handleSelect(id) {
+                const item = menuData.find(menu => menu.id === id);
+                const selectButton = document.querySelector(`.menu-item[data-id='${id}'] .select-button`);
+                
+                if (!item || item.quantity === 0) {
+                    alert('수량을 1개 이상 선택해주세요.');
+                    return;
+                }
+
+                const existingCartItemIndex = cartItems.findIndex(cartItem => cartItem.name === item.name);
+
+                if (existingCartItemIndex > -1) {
+                    cartItems[existingCartItemIndex].quantity = item.quantity;
+                } else {
+                    cartItems.push({
+                        name: item.name,
+                        quantity: item.quantity,
+                        price: item.price,
+                        image: item.image // 장바구니에도 이미지 경로 저장
+                    });
+                }
+                
+                selectButton.textContent = '추가됨';
+                selectButton.classList.add('added');
+                
+                updateCartButtonText();
+                updateTotalPrice(); // 총액 업데이트
+                
+                console.log('장바구니 현황:', cartItems);
+            }
+
+            /** 동적으로 생성된 메뉴 아이템에 이벤트 리스너를 추가하는 함수 */
+            function addEventListenersToMenuItems() {
+                document.querySelectorAll('.menu-item').forEach(menuElement => {
+                    const id = parseInt(menuElement.dataset.id);
+                    if(menuElement._hasListener) return; // 중복 방지
+
+                    menuElement.querySelector('.minus-btn').addEventListener('click', () => handleQuantityChange(id, -1));
+                    menuElement.querySelector('.plus-btn').addEventListener('click', () => handleQuantityChange(id, 1));
+                    menuElement.querySelector('.select-button').addEventListener('click', () => handleSelect(id));
+                    menuElement._hasListener = true;
                 });
             }
-            
-            selectButton.textContent = '추가됨';
-            selectButton.classList.add('added');
-            
-            // [추가됨] 장바구니 버튼 텍스트 업데이트
+
+            // --- 이벤트 리스너 설정 ---
+            cartButton.addEventListener('click', () => {
+                if (cartItems.length === 0) {
+                    alert('장바구니에 담긴 상품이 없습니다.');
+                    return;
+                }
+                localStorage.setItem('cartData', JSON.stringify(cartItems));
+                window.location.href = 'page_callfood_2.html';
+            });
+
+            // --- 초기화 ---
+            renderMenu(); // 페이지 로드 시 메뉴 렌더링
+            updateTotalPrice();
             updateCartButtonText();
-            
-            console.log('장바구니 현황:', cartItems);
-        }
-
-        // --- 이벤트 리스너 설정 ---
-
-        backButton.addEventListener('click', () => {
-            window.location.href = 'init_room_201.html';
         });
-
-        document.querySelectorAll('.menu-item').forEach(menuElement => {
-            const id = parseInt(menuElement.dataset.id);
-            
-            menuElement.querySelector('.minus-btn').addEventListener('click', () => handleQuantityChange(id, -1));
-            menuElement.querySelector('.plus-btn').addEventListener('click', () => handleQuantityChange(id, 1));
-            menuElement.querySelector('.select-button').addEventListener('click', () => handleSelect(id));
-        });
-
-        cartButton.addEventListener('click', () => {
-            if (cartItems.length === 0) {
-                alert('장바구니에 담긴 상품이 없습니다.');
-                return;
-            }
-            localStorage.setItem('cartData', JSON.stringify(cartItems));
-            window.location.href = 'page_callfood_2.html';
-        });
-
-        // --- 초기화 ---
-        updateTotalPrice();
-        updateCartButtonText(); // [추가됨] 페이지 로드 시에도 실행
-
     </script>
 </body>
 </html>

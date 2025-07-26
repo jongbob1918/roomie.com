@@ -131,27 +131,26 @@
         <img id="toast-full-image" class="toast-image" src="" alt="">
     </div>
     <script>
-        // --- 버튼 클릭 이벤트 리스너 설정 ---
+        // --- 공통 변수 설정 ---
+        const locationName = "ROOM_102"; // 이 객실의 고유 이름
+        document.querySelector('.room-number').textContent = locationName.replace('_', ' ');
 
-        // '로봇호출' 버튼
-        document.getElementById('button_call_robot').addEventListener('click', () => {
-            alert('로봇을 호출합니다.');
-        });
-
-        // '요청조회' 버튼 (수정됨)
-        document.getElementById('button_order_history').addEventListener('click', async () => {
+        /**
+         * 서버로 API 요청을 보내는 범용 함수
+         * @param {string} action - 요청할 작업 (예: 'create_call_task')
+         * @param {object} payload - 요청 시 보낼 데이터
+         * @returns {Promise<object>} - 서버 응답 데이터
+         */
+        async function postToServer(action, payload) {
+            // gui_models.py에 정의된 Request 모델 형식에 맞춰 요청 데이터를 구성합니다.
             const requestData = {
                 type: "request",
-                action: "get_order_history",
-                payload: {
-                    request_location: "ROOM_201",
-                    // 어떤 주문인지 특정할 수 없으므로 대표값으로 전송
-                    task_name: "TASK_001", 
-                    task_type_name: "음식배달"
-                }
+                action: action,
+                payload: payload
             };
             
-            const serverUrl = CONFIG.API_BASE_URL;
+            // http_manager.py에 정의된 API 경로를 action을 기반으로 완성합니다.
+            const serverUrl = `${CONFIG.API_BASE_URL}/${action}`;
 
             try {
                 const response = await fetch(serverUrl, {
@@ -161,90 +160,66 @@
                 });
 
                 if (!response.ok) {
-                    throw new Error('서버 응답에 문제가 있습니다.');
+                    const errorData = await response.json();
+                    throw new Error(errorData.detail || '서버 응답에 문제가 있습니다.');
                 }
 
-                const data = await response.json();
-                console.log('서버 응답:', data);
+                return await response.json();
 
-                if (data.type === 'response' && data.action === 'get_order_history') {
-                    // 성공 시, 응답 데이터를 localStorage에 저장
-                    localStorage.setItem('lastHistoryResponse', JSON.stringify(data));
-                    // 다음 페이지로 이동 (page_callfood_4.html 파일이 실제로 존재해야 합니다)
-                    window.location.href = 'page_callfood_4.html';
-                } else {
-                    throw new Error(data.message || '유효하지 않은 서버 응답');
-                }
             } catch (error) {
-                console.error('요청 조회 실패:', error);
-                alert('요청 내역을 불러오는 데 실패했습니다. 서버 상태를 확인해주세요.');
+                console.error(`'${action}' 요청 실패:`, error);
+                // 사용자에게 일관된 오류 메시지를 보여줍니다.
+                alert(`요청 처리 중 오류가 발생했습니다: ${error.message}`);
+                // 오류가 발생했음을 나타내기 위해 null을 반환합니다.
+                return null; 
             }
+        }
+
+        // --- 버튼 클릭 이벤트 리스너 설정 ---
+
+        // '로봇호출' 버튼
+        document.getElementById('button_call_robot').addEventListener('click', async () => {
+            const payload = { location: locationName };
+            const data = await postToServer('create_call_task', payload);
+
+            if (data && data.payload.success) {
+                alert(`로봇을 호출했습니다. (작업명: ${data.payload.task_name})`);
+                // 호출 상태를 확인할 수 있도록 작업 정보를 저장하고 다음 페이지로 이동
+                localStorage.setItem('lastCallTask', JSON.stringify(data.payload));
+                window.location.href = 'page_call_status.html'; // 예시: 호출 상태 페이지
+            }
+        });
+
+        // '요청조회' 버튼
+        // 참고: 특정 task_name 없이 모든 기록을 가져오는 페이지로 이동하는 것이 더 자연스러운 UI 흐름입니다.
+        // 여기서는 '요청 내역' 페이지로 단순히 이동하는 것으로 수정합니다.
+        document.getElementById('button_order_history').addEventListener('click', () => {
+             // 이 페이지에서는 어떤 요청을 조회할지 알 수 없으므로,
+             // 모든 요청 목록을 보여주는 페이지로 이동시키는 것이 좋습니다.
+            window.location.href = 'page_history_list.html'; // 예시: 전체 요청 목록 페이지
         });
         
         // '음식주문' 버튼
         document.getElementById('button_order_food').addEventListener('click', async () => {
-            const requestData = {
-                type: "request",
-                action: "get_food_menu",
-                payload: {
-                    location_name: "ROOM_201"
-                }
-            };
-            
-            const serverUrl = CONFIG.API_BASE_URL;
-            
-            try {
-                const response = await fetch(serverUrl, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(requestData)
-                });
+            const payload = { location_name: locationName };
+            const data = await postToServer('get_food_menu', payload);
 
-                if (!response.ok) {
-                    throw new Error('서버 응답에 문제가 있습니다.');
-                }
-
-                const data = await response.json();
+            if (data) {
+                // 성공 시, 응답 데이터를 localStorage에 저장하고 메뉴 페이지로 이동
                 localStorage.setItem('foodMenuData', JSON.stringify(data.payload.food_items));
-                console.log('서버 응답:', data);
                 window.location.href = 'page_callfood_1.html';
-
-            } catch (error) {
-                console.error('오류 발생:', error);
-                alert('음식 주문 메뉴를 불러오는 데 실패했습니다. 서버 상태를 확인해주세요.');
             }
         });
 
         // '비품주문' 버튼
         document.getElementById('button_order_supply').addEventListener('click', async () => {
-            const requestData = {
-                type: "request",
-                action: "get_supply_menu",
-                payload: {
-                    location_name: "ROOM_201"
-                }
-            };
+            const payload = { location_name: locationName };
+            const data = await postToServer('get_supply_menu', payload);
             
-            const serverUrl =  CONFIG.API_BASE_URL;
-
-            try {
-                const response = await fetch(serverUrl, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(requestData)
-                });
-
-                if (!response.ok) {
-                    throw new Error('서버 응답에 문제가 있습니다.');
-                }
-
-                const data = await response.json();
-                console.log('서버 응답:', data);
+            if (data) {
+                // 성공 시, 음식 주문과 마찬가지로 데이터를 저장하고 메뉴 페이지로 이동
+                localStorage.setItem('supplyMenuData', JSON.stringify(data.payload.supply_items));
                 window.location.href = 'page_callsupply_1.html';
-
-            } catch (error) {
-                console.error('오류 발생:', error);
-                alert('비품 주문 메뉴를 불러오는 데 실패했습니다. 서버 상태를 확인해주세요.');
             }
         });
 
