@@ -36,8 +36,10 @@ ACTION_HANDLERS = {
 
 # --- API 엔드포인트 ---
 @app.post("/api")
-async def handle_request(req_data: RequestModel): # async로 변경
-    """ 클라이언트로부터 오는 모든 POST 요청을 처리하는 단일 엔드포인트 """
+async def handle_request(req_data: RequestModel):
+    print("\n--- 수신된 원본 JSON ---")
+    print(json.dumps(req_data.dict(), ensure_ascii=False, indent=2))  # 🎯 보기 좋은 JSON 출력
+
     print(f"\n--- 수신된 Action: {req_data.action} ---")
     
     handler = ACTION_HANDLERS.get(req_data.action)
@@ -89,15 +91,13 @@ async def websocket_endpoint(websocket: WebSocket):
 
 # --- 이벤트 브로드캐스트 함수 ---
 async def broadcast_event(event_data: dict):
-    print(f"이벤트 전송됨: {event_data} to {connection.client}")
     # 연결이 끊긴 소켓을 추적하여 제거하기 위한 리스트
     to_remove = []
     for connection in active_connections:
         
         try:
             await connection.send_text(json.dumps(event_data))
-
-            # print(f"이벤트 전송됨: {event_data} to {connection.client}") # 디버깅용
+            print(f"이벤트 전송됨: {event_data} to {connection.client}")
         except Exception as e:
             print(f"메시지 전송 실패 (연결 끊김 예상): {connection.client}, 오류: {e}")
             to_remove.append(connection)

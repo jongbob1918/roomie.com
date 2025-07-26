@@ -2,7 +2,7 @@
 from datetime import datetime, timedelta
 import pytz
 import uuid # 동적인 Task ID 생성을 위해 추가
-
+import json
 # config.py와 models.py에서 필요한 내용을 가져옵니다.
 import config
 from models import RequestPayload
@@ -31,7 +31,11 @@ def create_delivery_task(payload: RequestPayload) -> dict:
     # 동적으로 고유한 작업 ID 생성 (하드코딩 제거)
     task_id = f"TASK_{str(uuid.uuid4())[:8].upper()}"
     print(f"새로운 배달 작업 생성: {task_id}")
-    print("요청된 주문 내역:", payload.order_details.items)
+    try:
+        order_json = json.dumps([item.dict() for item in payload.order_details.items], ensure_ascii=False, indent=2)
+        print("요청된 주문 내역 (원본 JSON):\n", order_json)
+    except Exception as e:
+        print("요청 데이터 디버깅 실패:", e)
     
     return {
         "type": "response",
