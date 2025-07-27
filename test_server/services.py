@@ -1,17 +1,18 @@
-# services.py
+# services.py (수정 후)
+
 from datetime import datetime, timedelta
 import pytz
-import uuid # 동적인 Task ID 생성을 위해 추가
+import uuid
 import json
-# config.py와 models.py에서 필요한 내용을 가져옵니다.
-import config
-from models import RequestPayload
+import random
 
-# 모든 서비스 함수들은 동일한 timezone을 사용합니다.
+import config
+from models import RequestPayload # RequestModel은 서버에서 처리하므로 여기선 payload만 사용
+
 KST = pytz.timezone(config.TIMEZONE)
 
 def get_food_menu(payload: RequestPayload) -> dict:
-    """ 음식 메뉴를 반환하는 서비스 """
+    """ 음식 메뉴를 반환 (명세서와 일치) """
     return {
         "type": "response",
         "action": "get_food_menu",
@@ -19,7 +20,7 @@ def get_food_menu(payload: RequestPayload) -> dict:
     }
 
 def get_supply_menu(payload: RequestPayload) -> dict:
-    """ 비품 메뉴를 반환하는 서비스 """
+    """ 비품 메뉴를 반환 (명세서와 일치) """
     return {
         "type": "response",
         "action": "get_supply_menu",
@@ -27,16 +28,8 @@ def get_supply_menu(payload: RequestPayload) -> dict:
     }
 
 def create_delivery_task(payload: RequestPayload) -> dict:
-    """ 배달 작업을 생성하는 서비스 """
-    # 동적으로 고유한 작업 ID 생성 (하드코딩 제거)
+    """ 배송 작업을 생성 (명세서와 일치) """
     task_id = f"TASK_{str(uuid.uuid4())[:8].upper()}"
-    print(f"새로운 배달 작업 생성: {task_id}")
-    try:
-        order_json = json.dumps([item.dict() for item in payload.order_details.items], ensure_ascii=False, indent=2)
-        print("요청된 주문 내역 (원본 JSON):\n", order_json)
-    except Exception as e:
-        print("요청 데이터 디버깅 실패:", e)
-    
     return {
         "type": "response",
         "action": "create_delivery_task",
@@ -46,43 +39,67 @@ def create_delivery_task(payload: RequestPayload) -> dict:
             "success": True,
             "error_code": None,
             "error_message": None,
-            "estimated_time": 55,
+            "estimated_time": 55, # int
+            "task_creation_time": datetime.now(KST).isoformat()
+        }
+    }
+
+def create_call_task(payload: RequestPayload) -> dict:
+    """ 로봇 호출 작업을 생성 (명세서에 맞게 응답 필드 수정) """
+    task_id = f"TASK_{str(uuid.uuid4())[:8].upper()}"
+    return {
+        "type": "response",
+        "action": "create_call_task",
+        "payload": {
+            "location_name": payload.location, # 요청의 location을 location_name으로 반환
+            "task_name": task_id,
+            "success": True,
+            "error_code": None,
+            "error_message": None,
             "task_creation_time": datetime.now(KST).isoformat()
         }
     }
 
 def get_order_history(payload: RequestPayload) -> dict:
-    """ 주문 내역을 반환하는 서비스 """
+    """ 주문 내역을 반환 (도착 예정 시간 계산 로직 추가) """
     now = datetime.now(KST)
+    task_creation_time = now - timedelta(minutes=1) # 테스트를 위해 1분 전에 생성되었다고 가정
+    estimated_seconds = 55 # 예상 소요 시간 (초)
+
+    # ✅ 수정: 도착 예정 시간을 서버에서 직접 계산
+    estimated_arrival_time = task_creation_time + timedelta(seconds=estimated_seconds)
+
     return {
         "type": "response",
         "action": "get_order_history",
         "payload": {
             "request_location": payload.request_location,
             "task_name": payload.task_name,
-            "task_type_name": payload.task_type_name,
-            "estimated_time": 55,
-            "task_creation_time": (now - timedelta(minutes=5)).isoformat(),
-            "robot_assignment_time": (now - timedelta(minutes=4)).isoformat(),
-            "pickup_completion_time": now.isoformat(),
-            "delivery_arrival_time": None
+            "task_type_name": "음식배달",
+            "estimated_time": estimated_seconds,
+            "task_creation_time":  task_creation_time.isoformat(),
+            "robot_assignment_time": task_creation_time.isoformat(), # 예시 데이터
+            "pickup_completion_time": now.isoformat(), # 예시 데이터
+            # ✅ 수정: 계산된 도착 시간을 ISO 문자열로 전달
+            "delivery_arrival_time": estimated_arrival_time.isoformat()
         }
     }
 
-def create_call_task(payload: RequestPayload) -> dict:
-    """ 로봇 호출 작업을 생성하는 서비스 """
-    task_id = f"TASK_{str(uuid.uuid4())[:8].upper()}"
-    print(f"새로운 호출 작업 생성: {task_id}")
-    
+# --- 신규 API 서비스 함수 ---
+def get_call_history(payload: RequestPayload) -> dict:
+    """ 호출 내역을 반환하는 신규 서비스 """
     return {
         "type": "response",
-        "action": "create_call_task",
+        "action": "get_call_history",
         "payload": {
-            "location_name": payload.location,
-            "task_name": task_id,
-            "success": True,
-            "error_code": None,
-            "error_message": None,
-            "task_creation_time": datetime.now(KST).isoformat()
+            "location_name": payload.location_name,
+            "task_name": payload.task_name,
+            "task_type_name": "로봇호출", # task_type_name은 "로봇호출"이 더 적절해 보입니다.
+            "estimated_time": 5, # 분 단위
+            "robot_status" : {
+               "x": round(random.uniform(1.0, 100.0), 2),
+               "y": round(random.uniform(1.0, 100.0), 2),
+               "floorId": 1 # 명세서의 floor_id는 JSON에서 floorId로 변환됩니다.
+            }
         }
     }
