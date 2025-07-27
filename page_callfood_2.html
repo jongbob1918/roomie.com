@@ -344,7 +344,7 @@
                         // ✅ 수정: 서버 스펙(gui_models.py)에 맞춰 데이터 구조 변경
                         order_details: {
                             // "food"는 임의의 키, 서버에서는 이 키를 사용하지 않고 값만 사용
-                            "food": itemsToOrder.map(item => ({
+                            items: itemsToOrder.map(item => ({
                                 name: item.name,
                                 quantity: item.quantity,
                                 price: item.price
