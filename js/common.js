@@ -63,19 +63,19 @@ export function initWebSocket() {
 
                 case "robot_arrival_completion":
                     // 로봇 도착 시, 알림 표시
-                    showToast("/assets/images/robot_arrived_pickup.png");
+                    showToast("./assets/images/robot_arrived_pickup.png");
                     // 필요 시, 특정 페이지로 강제 이동시킬 수 있습니다.
                     // 예: if(location.hash.includes('history-detail')) location.hash = 'robot-success';
                     break;
                     
                 case "delivery_completion":
                     // 배송 완료 시, 알림 표시
-                    showToast("/assets/images/delivery_completed_notification.png");
+                    showToast("./assets/images/delivery_completed_notification.png");
                     break;
 
                 case "task_timeout_return":
                     // 타임아웃 시, 알림 표시
-                    showToast("/assets/images/timeout_return_notification.png");
+                    showToast("./assets/images/timeout_return_notification.png");
                     break;
 
                 default:

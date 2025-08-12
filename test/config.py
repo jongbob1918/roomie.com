@@ -8,15 +8,15 @@ TIMEZONE = "Asia/Seoul"
 # --- 메뉴 데이터 ---
 # 모든 메뉴 정보를 한 곳에서 관리합니다.
 FOOD_MENU = [
-    {"food_name": "스파게티", "price": 15000, "image": "/assets/images/spaghetti.jpg"},
-    {"food_name": "피자", "price": 25000, "image": "/assets/images/pizza.jpg"},
-    {"food_name": "스테이크", "price": 48000, "image": "/assets/images/steak.jpg"},
-    {"food_name": "버거", "price": 11000, "image": "/assets/images/burger.jpg"},
+    {"food_name": "스파게티", "price": 15000, "image": "./assets/images/spaghetti.jpg"},
+    {"food_name": "피자", "price": 25000, "image": "./assets/images/pizza.jpg"},
+    {"food_name": "스테이크", "price": 48000, "image": "./assets/images/steak.jpg"},
+    {"food_name": "버거", "price": 11000, "image": "./assets/images/burger.jpg"},
     
 ]
 
 SUPPLY_MENU = [
-    {"supply_name": "타월", "image": "/assets/images/towel.jpg"},
-    {"supply_name": "생수", "image": "/assets/images/water.jpg"},
-    {"supply_name": "칫솔", "image": "/assets/images/toothbrush.jpg"}
+    {"supply_name": "타월", "image": "./assets/images/towel.jpg"},
+    {"supply_name": "생수", "image": "./assets/images/water.jpg"},
+    {"supply_name": "칫솔", "image": "./assets/images/toothbrush.jpg"}
 ]
