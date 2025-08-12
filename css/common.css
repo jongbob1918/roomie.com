@@ -19,7 +19,7 @@ body { font-family: var(--main-font); background-color: #333; }
 
 /* 2. 공통 레이아웃 */
 #app-container { width: 100%; height: 100vh; display: flex; justify-content: center; align-items: center; }
-.app-layout { width: 100%; height: 100%; max-height: 100vh; display: flex; flex-direction: column; color: var(--light-text-color); background-size: cover; background-position: center; background-image: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url('/assets/images/background_1.png'); padding: 30px; position: relative; overflow-y: auto; }
+.app-layout { width: 100%; height: 100%; max-height: 100vh; display: flex; flex-direction: column; color: var(--light-text-color); background-size: cover; background-position: center; background-image: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url('../assets/images/background_1.png'); padding: 30px; position: relative; overflow-y: auto; }
 
 .app-layout .main-content { flex-grow: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; }
 .main-content.main-content-sub {
@@ -80,8 +80,8 @@ body { font-family: var(--main-font); background-color: #333; }
 .menu-price { font-size: 18px; font-weight: 700; color: var(--primary-text-color); }
 .quantity-control { display: flex; align-items: center; gap: 15px; }
 .quantity-btn { width: 30px; height: 30px; background-size: contain; cursor: pointer; border: none; background-color: transparent; }
-.minus-btn { background-image: url('/assets/images/minus_button.png'); }
-.plus-btn { background-image: url('/assets/images/plus_button.png'); }
+.minus-btn { background-image: url('./assets/images/minus_button.png'); }
+.plus-btn { background-image: url('./assets/images/plus_button.png'); }
 .menu-name { 
     font-size: 20px; 
     font-weight: 500;
@@ -243,12 +243,12 @@ body { font-family: var(--main-font); background-color: #333; }
 .box-header .page-title { font-size: 24px; font-weight: 500; flex-grow: 1; text-align: center; }
 .box-header .header-placeholder { width: 39px; flex-shrink: 0; }
 .box-header .header-btn { background-color: transparent; border: none; cursor: pointer; padding: 0; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-.box-header .back-button { width: 39px; height: 39px; background-image: url('/assets/images/back_button.png'); background-size: contain; background-repeat: no-repeat; }
+.box-header .back-button { width: 39px; height: 39px; background-image: url('../assets/images/back_button.png'); background-size: contain; background-repeat: no-repeat; }
 
 .box-header .back-button {
     width: 39px;
     height: 39px;
-    background-image: url('/assets/images/back_button.png');
+    background-image: url('../assets/images/back_button.png');
     background-size: contain;
     background-repeat: no-repeat;
 }
