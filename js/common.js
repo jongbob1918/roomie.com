@@ -47,35 +47,27 @@ export function initWebSocket() {
     ws.onopen = () => {
         console.log("WebSocket 연결 성공");
     };
-
-    ws.onmessage = (event) => {
+ws.onmessage = (event) => {
         try {
             const eventData = JSON.parse(event.data);
-            if (eventData.type !== "event") return; // 이벤트가 아니면 무시
+            if (eventData.type !== "event") return;
 
-            // API 명세서(message.md)와 app.js의 라우팅 로직을 기반으로 수정
             switch (eventData.action) {
                 case "call_request_acceptance":
-                    // 호출 수락 시, '로봇 호출 접수' 페이지로 이동
-                    const { task_name, estimated_wait_time } = eventData.payload;
-                    location.hash = `robot-accepted&task=${task_name}&wait=${estimated_wait_time}`;
+                    // ...
                     break;
 
+                // ✅ showToast 호출 시 상대경로가 아닌, 웹 루트 기준 절대경로로 변경
                 case "robot_arrival_completion":
-                    // 로봇 도착 시, 알림 표시
-                    showToast("./assets/images/robot_arrived_pickup.png");
-                    // 필요 시, 특정 페이지로 강제 이동시킬 수 있습니다.
-                    // 예: if(location.hash.includes('history-detail')) location.hash = 'robot-success';
+                    showToast("/assets/images/robot_arrived_pickup.png", "로봇이 문 앞에 도착했습니다.");
                     break;
                     
                 case "delivery_completion":
-                    // 배송 완료 시, 알림 표시
-                    showToast("./assets/images/delivery_completed_notification.png");
+                    showToast("/assets/images/delivery_completed_notification.png", "요청하신 물품의 배송이 완료되었습니다.");
                     break;
 
                 case "task_timeout_return":
-                    // 타임아웃 시, 알림 표시
-                    showToast("./assets/images/timeout_return_notification.png");
+                    showToast("/assets/images/timeout_return_notification.png", "시간이 초과되어 로봇이 복귀합니다.");
                     break;
 
                 default:
@@ -87,6 +79,7 @@ export function initWebSocket() {
             console.error("WebSocket 메시지 처리 중 오류 발생:", error);
         }
     };
+
 
     ws.onclose = () => {
         console.log("WebSocket 연결이 종료되었습니다. 5초 후 재연결을 시도합니다.");
