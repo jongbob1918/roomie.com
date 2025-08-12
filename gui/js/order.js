@@ -27,7 +27,6 @@ export async function loadAndRenderMenu(orderType, containerId) {
         container.innerHTML = '<p>오류가 발생했습니다. 잠시 후 다시 시도해주세요.</p>';
     }
 }
-
 function renderMenu(items, orderType, container) {
     container.innerHTML = '';
     const isFood = orderType === 'food';
@@ -35,8 +34,6 @@ function renderMenu(items, orderType, container) {
         const menuItemElement = document.createElement('div');
         menuItemElement.className = 'menu-item';
         
-        // --- ✅ 수정된 부분 ---
-        // 음식(isFood)인 경우에만 가격(menu-price)이 이름 옆에 표시되도록 수정
         menuItemElement.innerHTML = `
             <div class="menu-image" style="background-image: url('${item.image || 'assets/images/default.png'}');"></div>
             <div class="menu-details">
@@ -45,35 +42,57 @@ function renderMenu(items, orderType, container) {
                     ${isFood ? `<span class="menu-price">${item.price.toLocaleString()}원</span>` : ''}
                 </div>
                 <div class="quantity-control">
-                    <button class="quantity-btn minus-btn"></button>
-                    <span class="quantity">1</span>
+                    <button class="quantity-btn minus-btn" disabled></button>
+                    <span class="quantity">0</span>
                     <button class="quantity-btn plus-btn"></button>
                 </div>
-                <button class="select-button" data-index="${index}">선택</button>
+                <button class="select-button" data-index="${index}" disabled>선택</button>
             </div>`;
-        // -------------------
         container.appendChild(menuItemElement);
     });
     addMenuEventListeners(orderType, items);
 }
 
+// ✅ 0-10 수량 제한 및 버튼 활성화/비활성화 로직 추가
 function addMenuEventListeners(orderType, items) {
     document.querySelectorAll('.menu-item').forEach((menuItem) => {
         const index = parseInt(menuItem.querySelector('.select-button').dataset.index);
         const item = items[index];
         const qtySpan = menuItem.querySelector('.quantity');
+        const minusBtn = menuItem.querySelector('.minus-btn');
+        const plusBtn = menuItem.querySelector('.plus-btn');
+        const selectBtn = menuItem.querySelector('.select-button');
+
+        const updateButtons = (qty) => {
+            minusBtn.disabled = qty <= 0;
+            plusBtn.disabled = qty >= 10;
+            selectBtn.disabled = qty <= 0;
+        };
         
-        menuItem.querySelector('.plus-btn').addEventListener('click', () => {
+        plusBtn.addEventListener('click', () => {
             let qty = parseInt(qtySpan.textContent);
-            qtySpan.textContent = Math.min(10, qty + 1);
+            if (qty < 10) {
+                qty++;
+                qtySpan.textContent = qty;
+                updateButtons(qty);
+            }
         });
-        menuItem.querySelector('.minus-btn').addEventListener('click', () => {
+        minusBtn.addEventListener('click', () => {
             let qty = parseInt(qtySpan.textContent);
-            qtySpan.textContent = Math.max(1, qty - 1);
+            if (qty > 0) {
+                qty--;
+                qtySpan.textContent = qty;
+                updateButtons(qty);
+            }
         });
-        menuItem.querySelector('.select-button').addEventListener('click', (e) => {
+        selectBtn.addEventListener('click', () => {
             const quantity = parseInt(qtySpan.textContent);
-            addToCart(item, quantity, orderType);
+            if(quantity > 0) {
+                addToCart(item, quantity, orderType);
+                // 선택 후 수량을 0으로 초기화
+                qtySpan.textContent = 0;
+                updateButtons(0);
+            }
         });
     });
 }
@@ -216,14 +235,12 @@ export async function createOrder(orderType) {
         const response = await fetch(`${window.API_URL}/create_delivery_task`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(request) });
         const result = await response.json();
         if (result.payload && result.payload.success) {
-            localStorage.setItem("selectedTask", result.payload.task_name);
-            localStorage.setItem("selectedTaskType", isFood ? "음식배송" : "비품배송");
-            // ✅ 아래 줄 추가
-            if (result.payload.estimated_time) {
-                localStorage.setItem("estimatedTime", result.payload.estimated_time);
-            }
+            const taskName = result.payload.task_name;
+            const taskType = isFood ? "음식배송" : "비품배송";
+            
+            // LocalStorage 대신 URL로 정보를 전달하도록 변경
             localStorage.removeItem(cartKey);
-            location.hash = `order-success`;
+            location.hash = `order-success&task=${taskName}&type=${taskType}`;
         } 
         else 
         {
