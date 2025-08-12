@@ -105,7 +105,7 @@ app.include_router(router)
 # --- WebSocket 연결 관리 ---
 room_connections: dict[str, list[WebSocket]] = {}
 
-@app.websocket("/ws/guest/{room_id}")
+@app.websocket("api/gui/ws/guest/{room_id}")
 async def websocket_endpoint(websocket: WebSocket, room_id: str):
     """WebSocket 연결 관리"""
     await websocket.accept()
