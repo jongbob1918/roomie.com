@@ -80,8 +80,8 @@ body { font-family: var(--main-font); background-color: #333; }
 .menu-price { font-size: 18px; font-weight: 700; color: var(--primary-text-color); }
 .quantity-control { display: flex; align-items: center; gap: 15px; }
 .quantity-btn { width: 30px; height: 30px; background-size: contain; cursor: pointer; border: none; background-color: transparent; }
-.minus-btn { background-image: url('../assets/images/minus_button.png'); }
-.plus-btn { background-image: url('../assets/images/plus_button.png'); }
+.minus-btn { background-image: url('./assets/images/minus_button.png'); }
+.plus-btn { background-image: url('./assets/images/plus_button.png'); }
 .menu-name { 
     font-size: 20px; 
     font-weight: 500;
