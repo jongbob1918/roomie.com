@@ -22,17 +22,15 @@ function getConfigFromRoomParam() {
 // index.html폴더에서 실행
 // python3 -m http.server 8000        
 //http://127.0.0.1:8000/
-// 자기 ip로 수정
+// 자기 ip로 수정102
 // http://192.168.0.8:8000/?room=ROOM_102 
 const CONFIG = getConfigFromRoomParam();
 const ROOM_ID = CONFIG.ROOM_ID;
 const ENABLED_FEATURES = CONFIG.ENABLED_FEATURES;
 window.ROOM_ID = ROOM_ID;
-const IS_DEV = true;
-const BASE_URL = IS_DEV ? "https://e283804701d0.ngrok-free.app" : "https://addroomie.com";
 //const BASE_URL = IS_DEV ? "http://0.0.0.0:8888" : "https://roomie.com";
-window.API_URL = `${BASE_URL}/api/gui`;
-window.WS_URL = `${BASE_URL.replace("http", "ws")}/api/gui/ws/guest/${ROOM_ID}`;
+window.API_URL = `https://d33de7154b6a.ngrok-free.app/api/gui`;
+window.WS_URL = `ws://d33de7154b6a.ngrok-free.app/api/gui/ws/guest/${ROOM_ID}`;
 
 // --- 앱 상태 관리 ---
 let currentOrderType = 'food';
